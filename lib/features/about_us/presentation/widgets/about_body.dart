@@ -13,7 +13,6 @@ import 'package:cash_app/features/about_us/presentation/widgets/who_we_are_frame
 import 'package:cash_app/features/common_widgets/error_box.dart';
 import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
-import 'package:cash_app/features/common_widgets/mobile_header.dart';
 import 'package:cash_app/features/home/presentation/widgets/bullet_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,7 +110,6 @@ class _AboutBodyState extends State<AboutBody> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          buildMobileHeader(context: context),
           Container(
             height: 300,
             width: double.infinity,

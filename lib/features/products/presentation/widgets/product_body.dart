@@ -1,20 +1,15 @@
 import 'package:cash_app/core/constants.dart';
-import 'package:cash_app/core/global.dart';
 import 'package:cash_app/features/common_widgets/all_products_box.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
-import 'package:cash_app/features/common_widgets/error_failed_widget.dart';
 import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
-import 'package:cash_app/features/common_widgets/mobile_header.dart';
 import 'package:cash_app/features/common_widgets/no_data_box.dart';
 import 'package:cash_app/features/common_widgets/products_box.dart';
-import 'package:cash_app/features/common_widgets/product_search_widget.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_state.dart';
 import 'package:cash_app/features/products/data/models/categories.dart';
-import 'package:cash_app/features/products/data/models/product_image.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:cash_app/features/products/data/models/selectedCategory.dart';
 import 'package:cash_app/features/products/presentation/blocs/categories/categories_bloc.dart';
@@ -25,9 +20,6 @@ import 'package:cash_app/features/products/presentation/blocs/products/products_
 import 'package:cash_app/features/products/presentation/blocs/products/products_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/mi.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -163,121 +155,122 @@ class _ProductBodyState extends State<ProductBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: scrollController,
-      physics: const ClampingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildMobileHeader(context: context),
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Products",
-                  style: TextStyle(
-                      color: onBackgroundColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          final searchProducts =
-                              BlocProvider.of<SearchProductBloc>(context);
-                          searchProducts.add(SearchProductEvent(value));
-                        },
-                        textAlignVertical: TextAlignVertical.center,
-                        style: TextStyle(color: onBackgroundColor),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(0),
-                          filled: true,
-                          fillColor: surfaceColor,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none),
-                          hintText: "Search....",
-                          hintStyle:
-                              TextStyle(color: textInputPlaceholderColor),
-                          prefixIcon: Icon(Icons.search),
-                          prefixIconColor: textInputPlaceholderColor,
+    return SafeArea(
+      child: SingleChildScrollView(
+        controller: scrollController,
+        physics: const ClampingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Products",
+                    style: TextStyle(
+                        color: onBackgroundColor,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: (value) {
+                            final searchProducts =
+                                BlocProvider.of<SearchProductBloc>(context);
+                            searchProducts.add(SearchProductEvent(value));
+                          },
+                          textAlignVertical: TextAlignVertical.center,
+                          style: TextStyle(color: onBackgroundColor),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(0),
+                            filled: true,
+                            fillColor: surfaceColor,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none),
+                            hintText: "Search....",
+                            hintStyle:
+                                TextStyle(color: textInputPlaceholderColor),
+                            prefixIcon: Icon(Icons.search),
+                            prefixIconColor: textInputPlaceholderColor,
+                          ),
                         ),
                       ),
-                    ),
-                    // Container(
-                    //   width: 40,
-                    //   margin: EdgeInsets.only(right: 10),
-                    //   child: DropdownButtonHideUnderline(
-                    //     child: DropdownButton<String>(
-                    //       icon: Visibility(visible: false, child: Icon(Icons.arrow_downward)),
-                    //       // value: values,
-                    //       isExpanded: true,
-                    //       hint: Iconify(Mi.filter, size: 40, color: onBackgroundColor,),
-                    //       focusColor: Colors.transparent,
-                    //       items: filter.map(buildMenuLocation).toList(),
-                    //       onChanged: (value) => setState(() {
-                    //         this.value = value;
-                    //         print(value);
-                    //       }),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
+                      // Container(
+                      //   width: 40,
+                      //   margin: EdgeInsets.only(right: 10),
+                      //   child: DropdownButtonHideUnderline(
+                      //     child: DropdownButton<String>(
+                      //       icon: Visibility(visible: false, child: Icon(Icons.arrow_downward)),
+                      //       // value: values,
+                      //       isExpanded: true,
+                      //       hint: Iconify(Mi.filter, size: 40, color: onBackgroundColor,),
+                      //       focusColor: Colors.transparent,
+                      //       items: filter.map(buildMenuLocation).toList(),
+                      //       onChanged: (value) => setState(() {
+                      //         this.value = value;
+                      //         print(value);
+                      //       }),
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
-          ),
-          BlocConsumer<SearchProductBloc, SearchState>(builder: (_, state) {
-            if (state is SearchProductSuccessful) {
-              if (searchController.text == "") {
+            BlocConsumer<SearchProductBloc, SearchState>(builder: (_, state) {
+              if (state is SearchProductSuccessful) {
+                if (searchController.text == "") {
+                  return buildInitialInput(context: context);
+                }
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      searchedProducts(products: state.product),
+                      SizedBox(height: MediaQuery.of(context).size.height - 500,)
+                    ],
+                  ),
+                );
+              } else if (state is SearchProductLoading) {
+                return Column(
+                  children: [
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height - 200,)
+                  ],
+                );
+              } else {
                 return buildInitialInput(context: context);
               }
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    searchedProducts(products: state.product),
-                    SizedBox(height: MediaQuery.of(context).size.height - 500,)
-                  ],
-                ),
-              );
-            } else if (state is SearchProductLoading) {
-              return Column(
-                children: [
-                  Center(
-                    child: CircularProgressIndicator(
-                      color: primaryColor,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height - 200,)
-                ],
-              );
-            } else {
-              return buildInitialInput(context: context);
-            }
-          }, listener: (_, state) {
-            if (state is SearchProductFailed) {
-              buildErrorLayout(context: context, message: state.errorType);
-            }
-          }),
-          SizedBox(height: 50,),
-          footer(context: context)
-        ],
+            }, listener: (_, state) {
+              if (state is SearchProductFailed) {
+                buildErrorLayout(context: context, message: state.errorType);
+              }
+            }),
+            SizedBox(height: 50,),
+            footer(context: context)
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 enum APP_PAGE {
   splash,
+  onBoarding,
   login,
   signup,
   home,
@@ -26,6 +27,8 @@ extension AppPageExtension on APP_PAGE {
         return "/";
       case APP_PAGE.splash:
         return "/splash";
+      case APP_PAGE.onBoarding:
+        return "/boarding";
       case APP_PAGE.login:
         return "/login";
       case APP_PAGE.signup:
@@ -67,6 +70,8 @@ extension AppPageExtension on APP_PAGE {
     switch (this) {
       case APP_PAGE.splash:
         return "SPLASH";
+      case APP_PAGE.onBoarding:
+        return "BOARDING";
       case APP_PAGE.home:
         return "HOME";
       case APP_PAGE.login:

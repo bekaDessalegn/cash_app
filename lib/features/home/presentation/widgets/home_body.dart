@@ -3,27 +3,19 @@ import 'dart:convert';
 import 'package:cash_app/core/constants.dart';
 import 'package:cash_app/core/global.dart';
 import 'package:cash_app/core/router/route_utils.dart';
-import 'package:cash_app/features/about_us/presentation/widgets/who_we_are_frame.dart';
+import 'package:cash_app/core/services/shared_preference_service.dart';
 import 'package:cash_app/features/common_widgets/all_products_box.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
-import 'package:cash_app/features/common_widgets/error_failed_widget.dart';
-import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
-import 'package:cash_app/features/common_widgets/mobile_end_drawer.dart';
-import 'package:cash_app/features/common_widgets/mobile_header.dart';
 import 'package:cash_app/features/common_widgets/products_box.dart';
-import 'package:cash_app/features/common_widgets/youtube_error_layout.dart';
 import 'package:cash_app/features/home/data/models/home_content.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_state.dart';
 import 'package:cash_app/features/home/presentation/widgets/bullet_list.dart';
-import 'package:cash_app/features/home/presentation/widgets/home_iframe.dart';
-import 'package:cash_app/features/products/data/models/product_image.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -38,6 +30,8 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody> {
   var heroDescriptionController = quill.QuillController.basic();
   var whyUsDescriptionController = quill.QuillController.basic();
+
+  final _prefs = PrefService();
 
   @override
   void initState() {
@@ -91,7 +85,6 @@ class _HomeBodyState extends State<HomeBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildMobileHeader(context: context),
           SizedBox(
             height: 50,
           ),
@@ -181,7 +174,8 @@ class _HomeBodyState extends State<HomeBody> {
                             side: BorderSide(color: primaryColor)),
                       ),
                       onPressed: () {
-                        context.go(APP_PAGE.signup.toPath);
+                        _prefs.removeOnBoarding();
+                        // context.go(APP_PAGE.signup.toPath);
                       },
                       child: Text(
                         "Earn with us",

@@ -1,7 +1,6 @@
 import 'package:cash_app/core/constants.dart';
 import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
-import 'package:cash_app/features/common_widgets/mobile_header.dart';
 import 'package:cash_app/features/common_widgets/normal_textformfield.dart';
 import 'package:cash_app/features/common_widgets/success_flashbar.dart';
 import 'package:cash_app/features/contact_us/data/models/contact_us.dart';
@@ -71,7 +70,6 @@ class _ContactUsBodyState extends State<ContactUsBody> {
         key: contactUsFormKey,
         child: Column(
           children: [
-            buildMobileHeader(context: context),
             SizedBox(
               height: 10,
             ),

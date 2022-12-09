@@ -57,6 +57,7 @@ dependencies:
   phone_form_field: ^7.0.2
   progressive_image: ^2.0.0
   flutter_quill: ^6.1.6
+  introduction_screen: ^3.1.1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,7 @@ flutter:
 
   assets:
     - images/default.png
+    - images/about.png
     - images/loading.png
     - images/account.jpg
     - images/welcome_left.png

@@ -87,4 +87,20 @@ class PrefService {
     sharedPreferences.remove("user_id");
   }
 
+  Future createOnBoarding() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    _preferences.setBool("onBoarding", true);
+  }
+
+  Future readOnBoarding() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    var onBoarding = _preferences.getString("onBoarding");
+    return onBoarding;
+  }
+
+  Future removeOnBoarding() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    _preferences.remove("onBoarding");
+  }
+
 }

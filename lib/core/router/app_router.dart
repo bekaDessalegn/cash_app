@@ -16,6 +16,7 @@ import 'package:cash_app/features/auth/signup/presentation/screens/signup_screen
 import 'package:cash_app/features/contact_us/presentation/screens/contact_us_screen.dart';
 import 'package:cash_app/features/error_screen.dart';
 import 'package:cash_app/features/home/presentation/screens/home_screen.dart';
+import 'package:cash_app/features/on_boarding/presentation/screens/on_boarding_screen.dart';
 import 'package:cash_app/features/products/presentation/screens/product_details.dart';
 import 'package:cash_app/features/products/presentation/screens/products_screen.dart';
 import 'package:cash_app/features/products/presentation/screens/shared_product_details.dart';
@@ -33,7 +34,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
       refreshListenable: appService,
-      initialLocation: APP_PAGE.home.toPath,
+      initialLocation: APP_PAGE.product.toPath,
       routes: <GoRoute>[
         GoRoute(
           path: APP_PAGE.home.toPath,
@@ -44,6 +45,11 @@ class AppRouter {
           path: APP_PAGE.splash.toPath,
           name: APP_PAGE.splash.toName,
           builder: (context, state) => const SplashView(),
+        ),
+        GoRoute(
+          path: APP_PAGE.onBoarding.toPath,
+          name: APP_PAGE.onBoarding.toName,
+          builder: (context, state) => OnBoardingScreen(),
         ),
         GoRoute(
           path: APP_PAGE.login.toPath,
@@ -150,6 +156,7 @@ class AppRouter {
         final signupLocation = state.namedLocation(APP_PAGE.signup.toName);
         final affiliateProductsLocation = state.namedLocation(APP_PAGE.affiliateProducts.toName);
         final homeLocation = state.namedLocation(APP_PAGE.home.toName);
+        final boardingLocation = state.namedLocation(APP_PAGE.onBoarding.toName);
         final productsLocation = state.namedLocation(APP_PAGE.product.toName);
         final aboutUsLocation = state.namedLocation(APP_PAGE.aboutUs.toName);
         final contactUsLocation = state.namedLocation(APP_PAGE.contactUs.toName);
@@ -182,13 +189,21 @@ class AppRouter {
         //   return loginLocation;
         // }
 
+        final boarded = await sharedPreferences.getBool("onBoarding") ?? false;
         final loggedIn = await sharedPreferences.getBool(LOGIN_KEY) ?? false;
+
+        print("IS Boarded");
+        print(boarded);
 
         print("IS LOGGED IN");
         print(loggedIn);
 
+        if(!boarded){
+          return boardingLocation;
+        }
+
         if(!loggedIn && (isGoingToAffiliateProduct || isGoingToProfile || isGoingToWallet)){
-          return homeLocation;
+          return productsLocation;
         }
 
         if(loggedIn && (isGoingToAboutUsLocation || isGoingToContactUsLocation || isGoingToHome || isGoingToProductsLocation)){

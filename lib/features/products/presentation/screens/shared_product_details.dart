@@ -1,14 +1,9 @@
 import 'package:cash_app/core/constants.dart';
-import 'package:cash_app/core/global.dart';
 import 'package:cash_app/core/services/shared_preference_service.dart';
-import 'package:cash_app/features/common_widgets/detailEndDrawer.dart';
-import 'package:cash_app/features/common_widgets/detail_header.dart';
+import 'package:cash_app/features/common_widgets/customer_header.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
-import 'package:cash_app/features/common_widgets/error_failed_widget.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
 import 'package:cash_app/features/common_widgets/mobile_cookie_banner.dart';
-import 'package:cash_app/features/common_widgets/mobile_end_drawer.dart';
-import 'package:cash_app/features/common_widgets/mobile_header.dart';
 import 'package:cash_app/features/common_widgets/order_dialog.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_bloc.dart';
@@ -17,7 +12,6 @@ import 'package:cash_app/features/products/presentation/blocs/products/products_
 import 'package:cash_app/features/products/presentation/widgets/product_details_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class MobileSharedProductDetails extends StatefulWidget {
 
@@ -31,7 +25,6 @@ class _MobileSharedProductDetailsState extends State<MobileSharedProductDetails>
 
   @override
   void initState() {
-    detailScaffoldKey = GlobalKey<ScaffoldState>();
     final productDetails = BlocProvider.of<SingleProductBloc>(context);
     final productId = Uri.base.queryParameters['product_id'];
     if(productId.toString() != "null"){
@@ -52,8 +45,8 @@ class _MobileSharedProductDetailsState extends State<MobileSharedProductDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: detailScaffoldKey,
-      endDrawer: detailEndDrawer(context: context, selectedIndex: 1),
+      resizeToAvoidBottomInset: true,
+      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(84)),
       body: BlocBuilder<SingleProductBloc, SingleProductState>(builder: (_, state) {
         if (state is GetSingleProductSuccessful) {
           return ProductDetailsBody(product: state.product);

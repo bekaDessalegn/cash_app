@@ -24,8 +24,6 @@ final signupPasswordController = TextEditingController();
 final signupPhoneController = PhoneController(null);
 final signupEmailController = TextEditingController();
 final verifySignUpController = TextEditingController();
-GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-GlobalKey<ScaffoldState> detailScaffoldKey = GlobalKey<ScaffoldState>();
 
 Future getAccessTokens() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
