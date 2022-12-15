@@ -34,7 +34,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
       refreshListenable: appService,
-      initialLocation: APP_PAGE.product.toPath,
+      initialLocation: APP_PAGE.splash.toPath,
       routes: <GoRoute>[
         GoRoute(
           path: APP_PAGE.home.toPath,
@@ -161,6 +161,7 @@ class AppRouter {
         final aboutUsLocation = state.namedLocation(APP_PAGE.aboutUs.toName);
         final contactUsLocation = state.namedLocation(APP_PAGE.contactUs.toName);
         final affiliateWalletLocation = state.namedLocation(APP_PAGE.affiliateWallet.toName);
+        final splashLocation = state.namedLocation(APP_PAGE.splash.toName);
 
         final isLoggedIn = appService.loginState;
 
@@ -170,6 +171,7 @@ class AppRouter {
         final isGoingToProductsLocation = state.subloc == productsLocation;
         final isGoingToAboutUsLocation = state.subloc == aboutUsLocation;
         final isGoingToContactUsLocation = state.subloc == contactUsLocation;
+        final isGoingToSplashLocation = state.subloc == splashLocation;
 
         final isGoingToAffiliateWalletLocation = state.subloc == affiliateWalletLocation;
 
@@ -188,6 +190,10 @@ class AppRouter {
         // if(!isLoggedIn && !isGoingToLogin){
         //   return loginLocation;
         // }
+
+        if(isGoingToSplashLocation){
+          return null;
+        }
 
         final boarded = await sharedPreferences.getBool("onBoarding") ?? false;
         final loggedIn = await sharedPreferences.getBool(LOGIN_KEY) ?? false;

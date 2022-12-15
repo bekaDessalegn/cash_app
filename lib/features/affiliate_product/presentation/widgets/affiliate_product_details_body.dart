@@ -20,6 +20,7 @@ class AffiliateProductDetailsBody extends StatefulWidget {
 class _AffiliateProductDetailsBodyState extends State<AffiliateProductDetailsBody> {
 
   var productDescriptionController = quill.QuillController.basic();
+  var emptyController = quill.QuillController.basic();
 
   @override
   void initState() {
@@ -132,6 +133,9 @@ class _AffiliateProductDetailsBodyState extends State<AffiliateProductDetailsBod
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(
+                        height: 0,
+                        child: quill.QuillEditor.basic(controller: emptyController, readOnly: true)),
                     quill.QuillEditor.basic(controller: productDescriptionController, readOnly: true),
                     Divider(
                       color: surfaceColor,

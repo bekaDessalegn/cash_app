@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cash_app/core/router/route_utils.dart';
 import 'package:cash_app/core/services/app_service.dart';
 import 'package:cash_app/core/services/shared_preference_service.dart';
@@ -20,17 +22,18 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
 
-    _appService = Provider.of<AppService>(context, listen: false);
-    onStartUp();
-    _prefs.readCache().then((value) {
-      if(value != null){
-        context.go(APP_PAGE.affiliateProducts.toPath);
-      }
-      else{
-        context.go(APP_PAGE.home.toPath);
-      }
+    Timer(Duration(seconds: 2), () {
+      _appService = Provider.of<AppService>(context, listen: false);
+      onStartUp();
+      _prefs.readCache().then((value) {
+        if(value != null){
+          context.go(APP_PAGE.affiliateProducts.toPath);
+        }
+        else{
+          context.go(APP_PAGE.product.toPath);
+        }
+      });
     });
-
     super.initState();
   }
 
@@ -42,7 +45,7 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child: Image.asset("images/logo.png"),
       ),
     );
   }

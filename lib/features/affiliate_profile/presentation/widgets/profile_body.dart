@@ -29,6 +29,7 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/eva.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:progressive_image/progressive_image.dart';
 import 'package:provider/provider.dart';
 
@@ -56,9 +57,18 @@ class _ProfileBodyState extends State<ProfileBody> {
       final ImagePicker _picker = ImagePicker();
       XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
+        var webImage = await image.readAsBytes();
         var selected = File(image.path);
         setState(() {
+          selectedWebImage = webImage;
           _pickedImage = selected;
+          contentType = lookupMimeType(image.path);
+          if(contentType.toString() != "null"){
+            List type = contentType!.split("/");
+            imageType = type;
+          }
+          final putAvatar = BlocProvider.of<PutAvatarBloc>(context);
+          putAvatar.add(PutAvatar(Avatar(path: selectedWebImage.toString()), imageType));
         });
       } else {
         print("No image has been picked");
@@ -73,11 +83,6 @@ class _ProfileBodyState extends State<ProfileBody> {
           selectedWebImage = webImage;
           _pickedImage = selected;
           contentType = image.mimeType;
-          print(image.mimeType);
-          print(image.path);
-          print(image.name);
-          print(image.runtimeType);
-          print(image.hashCode);
           if(contentType.toString() != "null"){
             List type = contentType!.split("/");
             imageType = type;
@@ -428,7 +433,7 @@ class _ProfileBodyState extends State<ProfileBody> {
                             builder: (BuildContext context){
                           return Dialog(
                             child: SizedBox(
-                              height: 150,
+                              height: 170,
                               width: MediaQuery.of(context).size.width < 500 ? double.infinity : 300,
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),

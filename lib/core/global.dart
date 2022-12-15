@@ -8,7 +8,7 @@ const String apiKey = "2S9f4e2D886aGa231caH2H44f2R25Jf487cDfaa3G";
 // const String baseUrl = "https://cash-mart.onrender.com";
 // const String baseUrl = "https://api-cashmart.onrender.com";
 const String baseUrl = "http://192.168.43.166:5000";
-const String hostUrl = "https://cashmart.netlify.app";
+const String hostUrl = "https://cash.et";
 
 enum SocialMedia {facebook, whatsapp, telegram, twitter, linkedin}
 bool isWelcome = false;

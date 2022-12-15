@@ -21,8 +21,12 @@ Widget customerHeader({required BuildContext context}){
                   child: mainLogo()),
               Row(
                 children: [
-                  TextButton(onPressed: (){}, child: Text("Sign in")),
-                  TextButton(onPressed: (){}, child: Text("Sign up")),
+                  TextButton(onPressed: (){
+                    context.go(APP_PAGE.login.toPath);
+                  }, child: Text("Sign in")),
+                  TextButton(onPressed: (){
+                    context.go(APP_PAGE.signup.toPath);
+                  }, child: Text("Sign up")),
                 ],
               )
             ],

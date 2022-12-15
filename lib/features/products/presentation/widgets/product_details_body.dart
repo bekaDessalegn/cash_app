@@ -20,6 +20,7 @@ class ProductDetailsBody extends StatefulWidget {
 class _ProductDetailsBodyState extends State<ProductDetailsBody> {
 
   var productDescriptionController = quill.QuillController.basic();
+  var emptyController = quill.QuillController.basic();
 
   @override
   void initState() {
@@ -100,6 +101,9 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
                       ),
+                      SizedBox(
+                          height: 0,
+                          child: quill.QuillEditor.basic(controller: emptyController, readOnly: true)),
                       quill.QuillEditor.basic(controller: productDescriptionController, readOnly: true),
                       Divider(
                         color: surfaceColor,

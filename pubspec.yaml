@@ -58,6 +58,8 @@ dependencies:
   progressive_image: ^2.0.0
   flutter_quill: ^6.1.6
   introduction_screen: ^3.1.1
+  mime: ^1.0.3
+  youtube_player_flutter: ^8.1.1
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +95,7 @@ flutter:
   assets:
     - images/default.png
     - images/about.png
+    - images/logo.png
     - images/loading.png
     - images/account.jpg
     - images/welcome_left.png

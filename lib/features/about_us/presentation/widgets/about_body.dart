@@ -7,13 +7,9 @@ import 'package:cash_app/features/about_us/data/models/about_content.dart';
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_bloc.dart';
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_event.dart';
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_state.dart';
-import 'package:cash_app/features/about_us/presentation/widgets/how_to_affiliate_with_us_frame.dart';
-import 'package:cash_app/features/about_us/presentation/widgets/ordered_list_widget.dart';
-import 'package:cash_app/features/about_us/presentation/widgets/who_we_are_frame.dart';
+import 'package:cash_app/features/about_us/presentation/widgets/how_affiliate_withus_video.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
-import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
-import 'package:cash_app/features/home/presentation/widgets/bullet_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +28,7 @@ class _AboutBodyState extends State<AboutBody> {
   var howToAffiliateWithUsController = quill.QuillController.basic();
   var whoAreWeDescriptionController = quill.QuillController.basic();
   var whyUsDescriptionController = quill.QuillController.basic();
+  var emptyController = quill.QuillController.basic();
 
   static String? convertUrlToId(String url, {bool trimWhitespaces = true}) {
     if (!url.contains("http") && (url.length == 11)) return url;
@@ -175,9 +172,12 @@ class _AboutBodyState extends State<AboutBody> {
                   ),
                 ),
                 SizedBox(height: 10,),
+                SizedBox(
+                    height: 0,
+                    child: quill.QuillEditor.basic(controller: emptyController, readOnly: true)),
                 quill.QuillEditor.basic(controller: whoAreWeDescriptionController, readOnly: true),
                 SizedBox(height: 40,),
-                // WhoAreWeIframeScreen(url: convertUrlToId(aboutUsContent.whoAreWeVideoLink)!, frameHeight: 170, frameWidth: double.infinity,),
+                YoutubeVideo(youtubeId: convertUrlToId(aboutUsContent.whoAreWeVideoLink)!,),
                 SizedBox(height: 40,),
                 Text(
                   "why us?",
@@ -242,6 +242,7 @@ class _AboutBodyState extends State<AboutBody> {
                   ),
                 ),
                 SizedBox(height: 10,),
+                YoutubeVideo(youtubeId: convertUrlToId(aboutUsContent.howToAffiliateWithUsVideoLink)!,),
                 // HowToAffiliateWithUsFrame(url: convertUrlToId(aboutUsContent.howToAffiliateWithUsVideoLink)!, frameHeight: 170, frameWidth: double.infinity,),
                 SizedBox(height: 25,),
                 SizedBox(

@@ -5,7 +5,7 @@ Widget errorBox({required VoidCallback onPressed}){
   return Container(
     margin: EdgeInsets.only(top: 50),
     width: 250,
-    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
     decoration: BoxDecoration(
         border: Border.all(color: surfaceColor),
         borderRadius: BorderRadius.circular(10)
