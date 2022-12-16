@@ -50,7 +50,7 @@ class OnBoardingScreen extends StatelessWidget {
       done: Text("Get Started", style: TextStyle(color: onBackgroundColor, fontWeight: FontWeight.bold),),
       onDone: (){
         _prefs.createOnBoarding();
-        context.go(APP_PAGE.home.toPath);
+        context.go(APP_PAGE.product.toPath);
       },
     ));
   }

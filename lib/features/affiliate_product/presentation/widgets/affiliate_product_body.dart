@@ -192,6 +192,7 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                             ),
                             SizedBox(height: 30,),
                             ElevatedButton(onPressed: () async {
+                              isWelcome = false;
                               await _prefs.removeJoiningBonus();
                               Navigator.pop(context);
                             },

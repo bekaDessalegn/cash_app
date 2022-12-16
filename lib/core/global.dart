@@ -12,7 +12,7 @@ const String hostUrl = "https://cash.et";
 
 enum SocialMedia {facebook, whatsapp, telegram, twitter, linkedin}
 bool isWelcome = false;
-double joiningBonus = 0;
+num joiningBonus = 0;
 
 final formKey = GlobalKey<FormState>();
 final signupFormKey = GlobalKey<FormState>();
@@ -53,6 +53,6 @@ Future share({required SocialMedia socialPlatform, required String shareLink}) a
   final url = Uri.parse(urls[socialPlatform]!);
 
   if (await canLaunchUrl(url)) {
-    await launchUrl(url);
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 }
