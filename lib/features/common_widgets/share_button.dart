@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 Widget shareButton({required BuildContext context}) {
   return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10)
           ),

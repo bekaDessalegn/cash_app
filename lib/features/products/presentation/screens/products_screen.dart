@@ -16,9 +16,9 @@ class _MobileProductsScreenState extends State<MobileProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(84)),
+      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(60)),
         body: ProductBody(),
-      bottomNavigationBar: customerBottomNavigationBar(context, 0),
+      bottomNavigationBar: customerBottomNavigationBar(context, 1),
     );
   }
 }

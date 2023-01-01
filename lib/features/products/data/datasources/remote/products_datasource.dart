@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cash_app/core/global.dart';
+import 'package:cash_app/features/products/data/datasources/local/products_local_datasource.dart';
 import 'package:cash_app/features/products/data/models/categories.dart';
+import 'package:cash_app/features/products/data/models/local_products.dart';
 import 'package:cash_app/features/products/data/models/orders.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +14,7 @@ Products? product_contents;
 class ProductsDataSource {
 
   int limit = 9;
+  ProductLocalDb productLocalDb = ProductLocalDb();
 
   Future<List<Products>> getProducts() async {
     var headersList = {
@@ -41,7 +44,7 @@ class ProductsDataSource {
     }
   }
 
-  Future<List<Products>> getProductsForList(int skipNumber) async {
+  Future getProductsForList(int skipNumber) async {
     var headersList = {
       'Accept': '*/*',
       'Api-Key': apiKey,
@@ -58,6 +61,45 @@ class ProductsDataSource {
       if (res.statusCode >= 200 && res.statusCode < 300) {
         final List<Products> products =
         content.map((product) => Products.fromJson(product)).toList();
+
+        for (var product in data) {
+          await productLocalDb.addProduct(LocalProducts(
+              productId: product["productId"],
+              productName: product["productName"],
+              price: product["price"],
+              published: product["published"],
+              featured: product["featured"],
+              topSeller: product["topSeller"],
+              viewCount: product["viewCount"]));
+          print("Has entered");
+        }
+
+        for (var product in data) {
+          await productLocalDb.updateProduct(product["productId"], LocalProducts(
+              productId: product["productId"],
+              productName: product["productName"],
+              price: product["price"],
+              published: product["published"],
+              featured: product["featured"],
+              topSeller: product["topSeller"],
+              viewCount: product["viewCount"]).toJson());
+          print("Has entered");
+        }
+
+        final localProduct = await productLocalDb.getListProducts();
+        List productIdList = [];
+        for (var product in data){
+          productIdList.add(product["productId"]);
+        }
+
+        for (var order in localProduct){
+          if(productIdList.contains(order.productId)){
+            continue;
+          }
+          var delete = await productLocalDb.deleteProduct(order.productId);
+          print(delete);
+        }
+
         print(data);
         return products;
       } else if(res.statusCode == 429){
@@ -68,11 +110,12 @@ class ProductsDataSource {
         throw Exception();
       }
     } on SocketException {
-      throw Exception();
+      final localProduct = await productLocalDb.getListProducts();
+      return localProduct;
     }
   }
 
-  Future<Products> getProduct(String? productId) async {
+  Future getProduct(String? productId) async {
     var headersList = {
       'Accept': '*/*',
       'Api-Key': apiKey,
@@ -95,11 +138,11 @@ class ProductsDataSource {
         throw Exception();
       }
     } on SocketException {
-      throw Exception();
+      return "Socket Error";
     }
   }
 
-  Future<List<Products>> searchProducts(String productName) async {
+  Future searchProducts(String productName) async {
     var headersList = {
       'Accept': '*/*',
       'Api-Key': apiKey,
@@ -120,13 +163,18 @@ class ProductsDataSource {
       } else if(res.statusCode == 429){
         print("Too many requests");
         throw Exception();
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
     } on SocketException {
-      throw Exception();
+      final localProduct = await productLocalDb.getListProducts();
+      var searchedProducts = localProduct.map((json) => LocalProducts.fromJson(json.toJson())).where((element) {
+        final productNameLowerCase = element.productName.toLowerCase();
+        final valueLowerCase = productName.toLowerCase();
+        return productNameLowerCase.contains(valueLowerCase);
+      }).toList();
+      return searchedProducts;
     }
   }
 

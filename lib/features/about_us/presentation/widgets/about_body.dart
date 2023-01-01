@@ -291,8 +291,7 @@ class _AboutBodyState extends State<AboutBody> {
               ],
             ),
           ),
-          SizedBox(height: 30,),
-          footer(context: context)
+          SizedBox(height: 10,)
         ],
       ),
     );

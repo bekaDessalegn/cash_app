@@ -7,7 +7,7 @@ const String apiKey = "2S9f4e2D886aGa231caH2H44f2R25Jf487cDfaa3G";
 // const String baseUrl = "http://localhost:5000";
 // const String baseUrl = "https://cash-mart.onrender.com";
 // const String baseUrl = "https://api-cashmart.onrender.com";
-const String baseUrl = "http://192.168.43.166:5000";
+const String baseUrl = "http://10.4.155.232:5000";
 const String hostUrl = "https://cash.et";
 
 enum SocialMedia {facebook, whatsapp, telegram, twitter, linkedin}
@@ -17,7 +17,6 @@ num joiningBonus = 0;
 final formKey = GlobalKey<FormState>();
 final signupFormKey = GlobalKey<FormState>();
 final verifyFormKey = GlobalKey<FormState>();
-final phoneOrEmail = TextEditingController();
 final password = TextEditingController();
 final signupFullNameController = TextEditingController();
 final signupPasswordController = TextEditingController();

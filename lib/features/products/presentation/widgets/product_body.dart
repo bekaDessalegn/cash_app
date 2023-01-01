@@ -5,11 +5,13 @@ import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
 import 'package:cash_app/features/common_widgets/no_data_box.dart';
+import 'package:cash_app/features/common_widgets/not_connected.dart';
 import 'package:cash_app/features/common_widgets/products_box.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_state.dart';
 import 'package:cash_app/features/products/data/models/categories.dart';
+import 'package:cash_app/features/products/data/models/local_products.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:cash_app/features/products/data/models/selectedCategory.dart';
 import 'package:cash_app/features/products/presentation/blocs/categories/categories_bloc.dart';
@@ -18,8 +20,11 @@ import 'package:cash_app/features/products/presentation/blocs/categories/categor
 import 'package:cash_app/features/products/presentation/blocs/products/products_bloc.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_event.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_state.dart';
+import 'package:cash_app/features/products/presentation/widgets/all_local_products_box.dart';
+import 'package:cash_app/features/products/presentation/widgets/local_product_list_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -143,6 +148,10 @@ class _ProductBodyState extends State<ProductBody> {
       });
     final categories = BlocProvider.of<CategoriesBloc>(context);
     categories.add(GetCategoriesEvent());
+    final prod = BlocProvider.of<FeaturedBloc>(context);
+    prod.add(FilterFeaturedEvent());
+    final prodT = BlocProvider.of<TopSellerBloc>(context);
+    prodT.add(FilterTopSellerEvent());
     super.initState();
   }
 
@@ -155,122 +164,98 @@ class _ProductBodyState extends State<ProductBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        controller: scrollController,
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Products",
-                    style: TextStyle(
-                        color: onBackgroundColor,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: searchController,
-                          onChanged: (value) {
-                            final searchProducts =
-                                BlocProvider.of<SearchProductBloc>(context);
-                            searchProducts.add(SearchProductEvent(value));
-                          },
-                          textAlignVertical: TextAlignVertical.center,
-                          style: TextStyle(color: onBackgroundColor),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(0),
-                            filled: true,
-                            fillColor: surfaceColor,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none),
-                            hintText: "Search....",
-                            hintStyle:
-                                TextStyle(color: textInputPlaceholderColor),
-                            prefixIcon: Icon(Icons.search),
-                            prefixIconColor: textInputPlaceholderColor,
-                          ),
+    return SingleChildScrollView(
+      controller: scrollController,
+      physics: const ClampingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Visibility(
+            visible: Provider.of<InternetConnectionStatus>(context) ==
+                InternetConnectionStatus.disconnected,
+            child: internetNotAvailable(context: context, message: "No Internet Connection!!!"),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          final searchProducts =
+                              BlocProvider.of<SearchProductBloc>(context);
+                          searchProducts.add(SearchProductEvent(value));
+                        },
+                        textAlignVertical: TextAlignVertical.center,
+                        style: TextStyle(color: onBackgroundColor),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(0),
+                          filled: true,
+                          fillColor: surfaceColor,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          hintText: "Search....",
+                          hintStyle:
+                              TextStyle(color: textInputPlaceholderColor),
+                          prefixIcon: Icon(Icons.search),
+                          prefixIconColor: textInputPlaceholderColor,
                         ),
                       ),
-                      // Container(
-                      //   width: 40,
-                      //   margin: EdgeInsets.only(right: 10),
-                      //   child: DropdownButtonHideUnderline(
-                      //     child: DropdownButton<String>(
-                      //       icon: Visibility(visible: false, child: Icon(Icons.arrow_downward)),
-                      //       // value: values,
-                      //       isExpanded: true,
-                      //       hint: Iconify(Mi.filter, size: 40, color: onBackgroundColor,),
-                      //       focusColor: Colors.transparent,
-                      //       items: filter.map(buildMenuLocation).toList(),
-                      //       onChanged: (value) => setState(() {
-                      //         this.value = value;
-                      //         print(value);
-                      //       }),
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ),
-            BlocConsumer<SearchProductBloc, SearchState>(builder: (_, state) {
-              if (state is SearchProductSuccessful) {
-                if (searchController.text == "") {
-                  return buildInitialInput(context: context);
-                }
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      searchedProducts(products: state.product),
-                      SizedBox(height: MediaQuery.of(context).size.height - 500,)
-                    ],
-                  ),
-                );
-              } else if (state is SearchProductLoading) {
-                return Column(
-                  children: [
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: primaryColor,
-                      ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height - 200,)
                   ],
-                );
-              } else {
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
+          BlocConsumer<SearchProductBloc, SearchState>(builder: (_, state) {
+            if (state is SearchProductSuccessful) {
+              if (searchController.text == "") {
                 return buildInitialInput(context: context);
               }
-            }, listener: (_, state) {
-              if (state is SearchProductFailed) {
-                buildErrorLayout(context: context, message: state.errorType);
-              }
-            }),
-            SizedBox(height: 50,),
-            footer(context: context)
-          ],
-        ),
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: searchedProducts(products: state.product),
+              );
+            } else if(state is SearchProductSocketErrorState){
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: localSearchedProducts(products: state.localProducts),
+              );
+            } else if (state is SearchProductLoading) {
+              return Column(
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height - 200,)
+                ],
+              );
+            } else {
+              return buildInitialInput(context: context);
+            }
+          }, listener: (_, state) {
+            if (state is SearchProductFailed) {
+              buildErrorLayout(context: context, message: state.errorType);
+            }
+          }),
+          SizedBox(height: 10,),
+        ],
       ),
     );
   }
@@ -280,7 +265,7 @@ class _ProductBodyState extends State<ProductBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 20.0),
+          padding: const EdgeInsets.only(left: 20.0, right: 10),
           child: BlocBuilder<FeaturedBloc, FeaturedState>(builder: (_, state) {
             if (state is FilterFeatureStateSuccessful) {
               return state.products.length == 0
@@ -301,6 +286,23 @@ class _ProductBodyState extends State<ProductBody> {
                         featuredProducts(products: state.products),
                       ],
                     );
+            } else if(state is FeaturedSocketErrorState){
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Featured Products",
+                    style: TextStyle(
+                        color: onBackgroundColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  localFeaturedProductListView(localProducts: state.localProducts),
+                ],
+              );
             }
             else if (state is FilterFeatureStateFailed) {
               return Center(
@@ -356,6 +358,23 @@ class _ProductBodyState extends State<ProductBody> {
                         featuredProducts(products: state.products),
                       ],
                     );
+            } else if(state is TopSellerSocketErrorState){
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    "Top Seller Products",
+                    style: TextStyle(
+                        color: onBackgroundColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  localFeaturedProductListView(localProducts: state.localProducts),
+                ],
+              );
             }
             else if (state is FilterTopSellerStateFailed) {
               return Center(
@@ -492,6 +511,8 @@ class _ProductBodyState extends State<ProductBody> {
                                 text: "No Products!",
                                 description: "Products will appear here."))
                         : allProducts();
+                  } else if(state is SocketErrorState){
+                    return localAllProductListView(localProducts: state.localProducts);
                   } else if (state is GetProductsLoading) {
                     return Center(
                       child: loadingBox(),
@@ -520,36 +541,31 @@ class _ProductBodyState extends State<ProductBody> {
   }
 
   Widget featuredProducts({required List<Products> products}) {
-    return SizedBox(
-      height: 318,
-      child: ListView.builder(
-          itemCount: products.length,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return productsBox(context: context, product: products[index]);
-          }),
-    );
+    return GridView.builder(
+        itemCount: products.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 260),
+        itemBuilder: (context, index) {
+          return productsBox(context: context, product: products[index]);
+        });
+  }
+
+  Widget localFeaturedProductListView({required List<LocalProducts> localProducts}) {
+    return GridView.builder(
+        itemCount: localProducts.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 260),
+        itemBuilder: (context, index) {
+          return localProductListBox(context: context, product: localProducts[index],);
+        });
   }
 
   Widget allProducts() {
     return Column(
       children: [
-        MediaQuery.of(context).size.width > 500
-            ? GridView.builder(
-            controller: _allProductsController,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, mainAxisExtent: 350),
-                itemCount: _allProducts.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: allProductsBox(
-                        context: context, product: _allProducts[index]),
-                  );
-                })
-            : ListView.builder(
+        ListView.builder(
                 controller: _allProductsController,
                 itemCount: _allProducts.length,
                 shrinkWrap: true,
@@ -568,6 +584,17 @@ class _ProductBodyState extends State<ProductBody> {
           ),
       ],
     );
+  }
+
+  Widget localAllProductListView({required List<LocalProducts> localProducts}){
+    return ListView.builder(
+        itemCount: localProducts.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return allLocalProductsBox(
+              context: context, product: localProducts[index]);
+        });
   }
 
   Widget searchedProducts({required List<Products> products}) {
@@ -602,6 +629,27 @@ class _ProductBodyState extends State<ProductBody> {
                   return allProductsBox(
                       context: context, product: products[index]);
                 });
+  }
+
+  Widget localSearchedProducts({required List<LocalProducts> products}) {
+    return products.isEmpty
+        ? Column(
+      children: [
+        Center(
+          child: noDataBox(
+              text: "No result found!", description: "please try another name."),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height - 400,)
+      ],
+    )
+        : ListView.builder(
+        itemCount: products.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return allLocalProductsBox(
+              context: context, product: products[index]);
+        });
   }
 
   Widget buildCategories() {
@@ -669,43 +717,30 @@ class _ProductBodyState extends State<ProductBody> {
     );
   }
 
-  DropdownMenuItem<String> buildMenuLocation(String filter) => DropdownMenuItem(
-        value: filter,
-        child: Text(
-          filter,
-          style: TextStyle(
-            color: onBackgroundColor,
-            fontSize: 14,
-          ),
-        ),
-      );
-
   Widget loadingFeatured(){
-    return SizedBox(
-      height: 285,
-      child: ListView.builder(
-          itemCount: 6,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return Container(
-              width: 300,
-              height: 285,
-              margin: EdgeInsets.fromLTRB(0, 10, 50, 10),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0.0, 1.0), //(x,y)
-                    blurRadius: 2.0,
-                  ),
-                ],
-              ),
-            );
-          }
-      ),
+    return GridView.builder(
+      itemCount: 6,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 280),
+        itemBuilder: (context, index) {
+          return Container(
+            width: 300,
+            height: 220,
+            margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 2.0,
+                ),
+              ],
+            ),
+          );
+        }
     );
   }
 }

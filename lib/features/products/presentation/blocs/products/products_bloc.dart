@@ -11,7 +11,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     on<GetProductsEvent>(_onGetProductsEvent);
     on<GetProductsForListEvent>(_onGetProductsForListEvent);
     on<GetMoreProductsForListEvent>(_onGetMoreProductsForListEvent);
-    on<SearchProductsEvent>(_onSearchProductsEvent);
     on<FilterProductsByCategoryEvent>(_onFilterProductsByCategoryEvent);
     on<FilterMoreProductsByCategoryEvent>(_onFilterMoreProductsByCategoryEvent);
   }
@@ -33,7 +32,11 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     emit(GetProductsLoading());
     try {
       final products = await productsRepository.getProductsForList(event.skipNumber);
-      emit(GetProductsSuccessful(products));
+      if(products.runtimeType.toString() == "List<LocalProducts>"){
+        emit(SocketErrorState(products));
+      } else{
+        emit(GetProductsSuccessful(products));
+      }
     } on SocketException{
       emit(GetProductsFailed("Something went wrong please, try again"));
     } on Exception{
@@ -44,18 +47,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   void _onGetMoreProductsForListEvent(GetMoreProductsForListEvent event, Emitter emit) async {
     try {
       final products = await productsRepository.getProductsForList(event.skipNumber);
-      emit(GetProductsSuccessful(products));
-    } on SocketException{
-      emit(GetProductsFailed("Something went wrong please, try again"));
-    } on Exception{
-      emit(GetProductsFailed("Something went wrong please, try again"));
-    }
-  }
-
-  void _onSearchProductsEvent(SearchProductsEvent event, Emitter emit) async {
-    emit(GetProductsLoading());
-    try {
-      final products = await productsRepository.searchProducts(event.productName);
       emit(GetProductsSuccessful(products));
     } on SocketException{
       emit(GetProductsFailed("Something went wrong please, try again"));
@@ -99,7 +90,11 @@ class SingleProductBloc extends Bloc<SingleProductEvent, SingleProductState>{
     emit(GetSingleProductLoading());
     try {
       final product = await productsRepository.getProduct(event.productId);
-      emit(GetSingleProductSuccessful(product));
+      if(product == "Socket Error"){
+        emit(GetSingleProductSocketError());
+      } else{
+        emit(GetSingleProductSuccessful(product));
+      }
     } on SocketException{
       emit(GetSingleProductFailed("Something went wrong please, try again"));
     } on Exception{
@@ -119,7 +114,11 @@ class SearchProductBloc extends Bloc<SearchEvent, SearchState>{
     emit(SearchProductLoading());
     try {
       final products = await productsRepository.searchProducts(event.productName);
-      emit(SearchProductSuccessful(products));
+      if(products.runtimeType.toString() == "List<LocalProducts>"){
+        emit(SearchProductSocketErrorState(products));
+      } else{
+        emit(SearchProductSuccessful(products));
+      }
     } on SocketException{
       emit(SearchProductFailed("Something went wrong please, try again"));
     } on Exception{

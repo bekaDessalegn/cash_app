@@ -7,8 +7,11 @@ import 'package:go_router/go_router.dart';
 
 Widget customerHeader({required BuildContext context}){
   return SafeArea(
-    child: Padding(
-      padding: EdgeInsets.fromLTRB(16, 20, 16, 0),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: surfaceColor, width: 1.0))
+      ),
+      padding: EdgeInsets.fromLTRB(0, 5, 5, 0),
       child: Column(
         children: [
           Row(
@@ -22,16 +25,15 @@ Widget customerHeader({required BuildContext context}){
               Row(
                 children: [
                   TextButton(onPressed: (){
-                    context.go(APP_PAGE.login.toPath);
+                    context.push(APP_PAGE.login.toPath);
                   }, child: Text("Sign in")),
                   TextButton(onPressed: (){
-                    context.go(APP_PAGE.signup.toPath);
+                    context.push(APP_PAGE.signup.toPath);
                   }, child: Text("Sign up")),
                 ],
               )
             ],
           ),
-          Divider(color: surfaceColor, thickness: 1.0,)
         ],
       ),
     ),

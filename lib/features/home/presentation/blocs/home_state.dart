@@ -2,6 +2,7 @@ import 'package:cash_app/features/home/data/models/home_content.dart';
 import 'package:cash_app/features/home/data/models/logo_image.dart';
 import 'package:cash_app/features/home/data/models/social_links.dart';
 import 'package:cash_app/features/home/data/models/video_links.dart';
+import 'package:cash_app/features/products/data/models/local_products.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 
 abstract class NewInStoreState {}
@@ -31,6 +32,11 @@ class FilterFeatureStateSuccessful extends FeaturedState {
 
 class FilterFeatureStateLoading extends FeaturedState {}
 
+class FeaturedSocketErrorState extends FeaturedState {
+  final List<LocalProducts> localProducts;
+  FeaturedSocketErrorState(this.localProducts);
+}
+
 class FilterFeatureStateFailed extends FeaturedState {
   final String errorType;
   FilterFeatureStateFailed(this.errorType);
@@ -46,6 +52,11 @@ class FilterTopSellerStateSuccessful extends TopSellerState {
 }
 
 class FilterTopSellerStateLoading extends TopSellerState {}
+
+class TopSellerSocketErrorState extends TopSellerState {
+  final List<LocalProducts> localProducts;
+  TopSellerSocketErrorState(this.localProducts);
+}
 
 class FilterTopSellerStateFailed extends TopSellerState {
   final String errorType;

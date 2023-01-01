@@ -86,7 +86,6 @@ class _EditEmailBodyState extends State<EditEmailBody> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 40,),
             semiBoldText(
                 value: "Edit Email", size: 28, color: onBackgroundColor),
             Padding(

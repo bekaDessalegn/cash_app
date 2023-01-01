@@ -20,7 +20,7 @@ class MobileAffiliateProfileScreen extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           child: mobileAffiliateHeader(context: context),
-          preferredSize: Size.fromHeight(84)),
+          preferredSize: Size.fromHeight(60)),
       body: SingleChildScrollView(child: ProfileBody()),
       bottomNavigationBar: bottomNavigationBar(context, 0),
     );

@@ -2,6 +2,7 @@ import 'package:cash_app/core/constants.dart';
 import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
 import 'package:cash_app/features/common_widgets/normal_textformfield.dart';
+import 'package:cash_app/features/common_widgets/not_connected.dart';
 import 'package:cash_app/features/common_widgets/success_flashbar.dart';
 import 'package:cash_app/features/contact_us/data/models/contact_us.dart';
 import 'package:cash_app/features/contact_us/presentation/blocs/contact_us_bloc.dart';
@@ -14,7 +15,9 @@ import 'package:cash_app/features/products/presentation/widgets/phone_textformfi
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
+import 'package:provider/provider.dart';
 
 class ContactUsBody extends StatefulWidget {
   const ContactUsBody({Key? key}) : super(key: key);
@@ -70,6 +73,11 @@ class _ContactUsBodyState extends State<ContactUsBody> {
         key: contactUsFormKey,
         child: Column(
           children: [
+            Visibility(
+              visible: Provider.of<InternetConnectionStatus>(context) ==
+                  InternetConnectionStatus.disconnected,
+              child: internetNotAvailable(context: context, message: "No Internet Connection!!!"),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -163,7 +171,7 @@ class _ContactUsBodyState extends State<ContactUsBody> {
                             backgroundColor: primaryColor,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            padding: EdgeInsets.symmetric(vertical: 15)),
+                            padding: EdgeInsets.symmetric(vertical: 10)),
                         child: isLoading ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: onPrimaryColor,),) : Text(
                           "Submit",
                           style: TextStyle(color: onPrimaryColor, fontSize: 20),
@@ -173,9 +181,8 @@ class _ContactUsBodyState extends State<ContactUsBody> {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 10,
             ),
-            footer(context: context)
           ],
         ),
       ),

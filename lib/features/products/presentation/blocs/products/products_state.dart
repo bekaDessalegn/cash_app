@@ -1,3 +1,4 @@
+import 'package:cash_app/features/products/data/models/local_products.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 
 abstract class ProductsState {}
@@ -10,6 +11,11 @@ class GetProductsSuccessful extends ProductsState {
 }
 
 class GetProductsLoading extends ProductsState {}
+
+class SocketErrorState extends ProductsState {
+  final List<LocalProducts> localProducts;
+  SocketErrorState(this.localProducts);
+}
 
 class GetProductsFailed extends ProductsState {
   final String errorType;
@@ -25,6 +31,8 @@ class GetSingleProductSuccessful extends SingleProductState {
   GetSingleProductSuccessful(this.product);
 }
 
+class GetSingleProductSocketError extends SingleProductState {}
+
 class GetSingleProductFailed extends SingleProductState {
   final String errorType;
   GetSingleProductFailed(this.errorType);
@@ -39,6 +47,11 @@ class InitialSearchProductState extends SearchState {}
 class SearchProductSuccessful extends SearchState {
   final List<Products> product;
   SearchProductSuccessful(this.product);
+}
+
+class SearchProductSocketErrorState extends SearchState {
+  final List<LocalProducts> localProducts;
+  SearchProductSocketErrorState(this.localProducts);
 }
 
 class SearchProductFailed extends SearchState {

@@ -13,7 +13,7 @@ class MobileEditPasswordScreen extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           child: mobileAffiliateHeader(context: context),
-          preferredSize: Size.fromHeight(84)),
+          preferredSize: Size.fromHeight(60)),
       body: EditPasswordBody(),
       bottomNavigationBar: bottomNavigationBar(context, 0),
     );

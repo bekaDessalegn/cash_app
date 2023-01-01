@@ -5,7 +5,7 @@ import 'package:cash_app/core/provider/locale_provider.dart';
 import 'package:cash_app/core/router/app_router.dart';
 import 'package:cash_app/core/services/app_service.dart';
 import 'package:cash_app/core/services/auth_service.dart';
-import 'package:cash_app/features/about_us/data/datasources/about_us_datasource.dart';
+import 'package:cash_app/features/about_us/data/datasources/remote/about_us_datasource.dart';
 import 'package:cash_app/features/about_us/data/repositories/about_us_repository.dart';
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_bloc.dart';
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_event.dart';
@@ -30,7 +30,7 @@ import 'package:cash_app/features/home/data/datasources/home_datasource.dart';
 import 'package:cash_app/features/home/data/repositories/home_repository.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
-import 'package:cash_app/features/products/data/datasources/products_datasource.dart';
+import 'package:cash_app/features/products/data/datasources/remote/products_datasource.dart';
 import 'package:cash_app/features/products/data/models/selectedCategory.dart';
 import 'package:cash_app/features/products/data/repositories/products_repositories.dart';
 import 'package:cash_app/features/products/presentation/blocs/categories/categories_bloc.dart';
@@ -42,6 +42,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -107,8 +108,8 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => NewInStoreBloc(homeRepository)..add(NewInStoreProductsEvent())),
-        BlocProvider(create: (_) => FeaturedBloc(homeRepository)..add(FilterFeaturedEvent())),
-        BlocProvider(create: (_) => TopSellerBloc(homeRepository)..add(FilterTopSellerEvent())),
+        BlocProvider(create: (_) => FeaturedBloc(homeRepository)),
+        BlocProvider(create: (_) => TopSellerBloc(homeRepository)),
         BlocProvider(create: (_) => HomeContentBloc(homeRepository)),
         BlocProvider(create: (_) => LogoImageBloc(homeRepository)..add(GetLogoImageEvent())),
         BlocProvider(create: (_) => FooterBloc(homeRepository)..add(GetFooterEvent())),
@@ -160,27 +161,33 @@ class _MyAppState extends State<MyApp> {
               800: Color.fromRGBO(136, 14, 79, .9),
               900: Color.fromRGBO(136, 14, 79, 1),
             };
-            return MaterialApp.router(
-              routeInformationProvider: goRouter.routeInformationProvider,
-              routerDelegate: goRouter.routerDelegate,
-              routeInformationParser: goRouter.routeInformationParser,
-              debugShowCheckedModeBanner: false,
-              title: 'cash_app',
-              theme: ThemeData(
-                primarySwatch: MaterialColor(0xFFF57721, color),
-                scaffoldBackgroundColor: backgroundColor,
-                textTheme: GoogleFonts.quicksandTextTheme(
-                  Theme.of(context).textTheme,
+            return StreamProvider<InternetConnectionStatus>(
+              initialData: InternetConnectionStatus.connected,
+              create: (_) {
+                return InternetConnectionChecker().onStatusChange;
+              },
+              child:  MaterialApp.router(
+                routeInformationProvider: goRouter.routeInformationProvider,
+                routerDelegate: goRouter.routerDelegate,
+                routeInformationParser: goRouter.routeInformationParser,
+                debugShowCheckedModeBanner: false,
+                title: 'cash_app',
+                theme: ThemeData(
+                  primarySwatch: MaterialColor(0xFFF57721, color),
+                  scaffoldBackgroundColor: backgroundColor,
+                  textTheme: GoogleFonts.quicksandTextTheme(
+                    Theme.of(context).textTheme,
+                  ),
                 ),
+                locale: provider.locale,
+                supportedLocales: L10n.all,
+                localizationsDelegates: [
+                  // AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
               ),
-              locale: provider.locale,
-              supportedLocales: L10n.all,
-              localizationsDelegates: [
-                // AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
             );
           },
         ),

@@ -6,7 +6,7 @@ Widget smallImage({required String urlImage}){
     placeholder: AssetImage('images/loading.png'),
     thumbnail: NetworkImage(urlImage),
     image: NetworkImage(urlImage),
-    height: 139,
+    height: 130,
     width: double.infinity,
     fit: BoxFit.cover,
   );

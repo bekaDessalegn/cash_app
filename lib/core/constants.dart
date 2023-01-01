@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 const double defaultSpacing = 10.0;
 const double smallSpacing = 5.0;
 const double mediumSpacing = 15.0;
-const double buttonHeight = 18.0;
+const double buttonHeight = 10.0;
 const double defaultFontSize = 16.0;
 const double defaultRadius = 8.0;
 const double h1FontSize = 30.0;

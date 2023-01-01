@@ -8,7 +8,7 @@ Widget mediumImage({required String urlImage}){
     thumbnail: NetworkImage(urlImage),
     // size: 1.29MB
     image: NetworkImage(urlImage),
-    height: 165,
+    height: 130,
     width: double.infinity,
     fit: BoxFit.cover,
   );

@@ -14,7 +14,7 @@ class MobileAffiliateProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: mobileAffiliateHeader(context: context), preferredSize: Size.fromHeight(84)),
+      appBar: PreferredSize(child: mobileAffiliateHeader(context: context), preferredSize: Size.fromHeight(60)),
       body: AffiliateProductBody(),
       bottomNavigationBar: bottomNavigationBar(context, 1),
     );

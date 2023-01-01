@@ -6,7 +6,7 @@ Widget shareImage({required String urlImage}){
     placeholder: AssetImage('images/loading.png'),
     thumbnail: NetworkImage(urlImage),
     image: NetworkImage(urlImage),
-    height: 172,
+    height: 300,
     width: double.infinity,
     fit: BoxFit.cover,
   );

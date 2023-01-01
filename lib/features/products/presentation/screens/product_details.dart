@@ -4,6 +4,7 @@ import 'package:cash_app/features/common_widgets/customer_header.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
 import 'package:cash_app/features/common_widgets/order_dialog.dart';
+import 'package:cash_app/features/common_widgets/socket_error_widget.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_bloc.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_event.dart';
@@ -40,10 +41,15 @@ class _MobileProductDetailsState extends State<MobileProductDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(84)),
+      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(60)),
       body: BlocBuilder<SingleProductBloc, SingleProductState>(builder: (_, state) {
         if (state is GetSingleProductSuccessful) {
           return ProductDetailsBody(product: state.product);
+        } else if(state is GetSingleProductSocketError){
+          return Center(child: socketErrorWidget(onPressed: (){
+            final productDetails = BlocProvider.of<SingleProductBloc>(context);
+            productDetails.add(GetSingleProductEvent(widget.productId));
+          }),);
         } else if (state is GetSingleProductFailed) {
           return Center(
             child: errorBox(onPressed: (){
@@ -77,7 +83,7 @@ class _MobileProductDetailsState extends State<MobileProductDetails> {
         width: double.infinity,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 15),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 backgroundColor: primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),

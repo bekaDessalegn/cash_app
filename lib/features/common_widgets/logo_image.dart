@@ -40,7 +40,7 @@ class _PlatformLogoImageState extends State<PlatformLogoImage> {
           } else if (state is GetLogoImageSuccessfulState) {
             return ClipRRect(
                 borderRadius: BorderRadius.circular(widget.logoBorderRadius),
-                child: Image.network("$baseUrl${state.logoImage.logoImage.path}", width: widget.logoWidth, height: widget.logoHeight, fit: BoxFit.fitHeight,));
+                child: Image.memory(state.logoImage.logoImage, width: widget.logoWidth, height: widget.logoHeight, fit: BoxFit.fitHeight,));
           } else if (state is GetLogoImageFailedState) {
             return SizedBox();
           } else {

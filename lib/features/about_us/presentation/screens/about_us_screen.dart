@@ -16,9 +16,9 @@ class _MobileAboutUsScreenState extends State<MobileAboutUsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(84)),
-        body: SafeArea(child: AboutBody()),
-      bottomNavigationBar: customerBottomNavigationBar(context, 1),
+      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(60)),
+        body: AboutBody(),
+      bottomNavigationBar: customerBottomNavigationBar(context, 0),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cash_app/features/products/data/datasources/products_datasource.dart';
+import 'package:cash_app/features/products/data/datasources/remote/products_datasource.dart';
 import 'package:cash_app/features/products/data/models/categories.dart';
 import 'package:cash_app/features/products/data/models/orders.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
@@ -23,7 +23,7 @@ class ProductsRepository{
     }
   }
 
-  Future<List<Products>> getProductsForList(int skipNumber) async{
+  Future getProductsForList(int skipNumber) async{
     try{
       print("Get Products for list Success");
       final products = await productsDataSource.getProductsForList(skipNumber);
@@ -37,7 +37,7 @@ class ProductsRepository{
     }
   }
 
-  Future<List<Products>> searchProducts(String productName) async{
+  Future searchProducts(String productName) async{
     try{
       print("Search Products Success");
       final products = await productsDataSource.searchProducts(productName);
@@ -65,7 +65,7 @@ class ProductsRepository{
     }
   }
 
-  Future<Products> getProduct(String? productId) async {
+  Future getProduct(String? productId) async {
     try{
       print("Get Product Success");
       final product = await productsDataSource.getProduct(productId);

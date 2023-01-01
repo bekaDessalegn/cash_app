@@ -18,7 +18,7 @@ class _MobileEditEmailScreenState extends State<MobileEditEmailScreen> {
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           child: mobileAffiliateHeader(context: context),
-          preferredSize: Size.fromHeight(84)),
+          preferredSize: Size.fromHeight(60)),
       body: EditEmailBody(),
       bottomNavigationBar: bottomNavigationBar(context, 0),
     );

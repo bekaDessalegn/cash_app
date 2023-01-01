@@ -7,8 +7,13 @@ import 'package:go_router/go_router.dart';
 
 Widget mobileAffiliateHeader({required BuildContext context}){
   return SafeArea(
-    child: Padding(
-      padding: EdgeInsets.fromLTRB(16, 20, 16, 0),
+    child: Container(
+      padding: EdgeInsets.fromLTRB(0, 5, 15, 0),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: surfaceColor, width: 1.0)
+        )
+      ),
       child: Column(
         children: [
           Row(
@@ -22,7 +27,6 @@ Widget mobileAffiliateHeader({required BuildContext context}){
               shareButton(context: context)
             ],
           ),
-          Divider(color: surfaceColor, thickness: 1.0,)
         ],
       ),
     ),

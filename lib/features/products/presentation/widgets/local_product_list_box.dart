@@ -1,13 +1,14 @@
 import 'package:cash_app/core/constants.dart';
-import 'package:cash_app/core/global.dart';
 import 'package:cash_app/core/router/route_utils.dart';
-import 'package:cash_app/features/common_widgets/medium_image.dart';
+import 'package:cash_app/features/common_widgets/blink_container.dart';
 import 'package:cash_app/features/common_widgets/order_button.dart';
-import 'package:cash_app/features/products/data/models/products.dart';
+import 'package:cash_app/features/products/data/models/local_products.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/bi.dart';
 
-Widget productsBox({required BuildContext context, required Products product}) {
+Widget localProductListBox({required BuildContext context, required LocalProducts product}) {
   return MouseRegion(
     cursor: SystemMouseCursors.click,
     child: GestureDetector(
@@ -31,17 +32,7 @@ Widget productsBox({required BuildContext context, required Products product}) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            product.mainImage!.path == "null" ?
-            Container(
-              height: 130,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("images/default.png"),
-                    fit: BoxFit.cover),
-              ),
-            ) : ClipRRect(
-                child: mediumImage(urlImage: "$baseUrl${product.mainImage!.path}")),
+            BlinkContainer(width: double.infinity, height: 130, borderRadius: 3,),
             SizedBox(
               height: 10,
             ),
@@ -77,7 +68,21 @@ Widget productsBox({required BuildContext context, required Products product}) {
                   SizedBox(height: 20,),
                   SizedBox(
                       width: double.infinity,
-                      child: orderButton(context: context, product: product)),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: textInputPlaceholderColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          "Order",
+                          style: TextStyle(
+                            color: onPrimaryColor,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )),
                   SizedBox(
                     height: 10,
                   )

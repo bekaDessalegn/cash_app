@@ -14,7 +14,7 @@ Widget addEmailButton({required BuildContext context, required TextEditingContro
       }
     },
     style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         backgroundColor: primaryColor,
         disabledBackgroundColor: disabledPrimaryColor,
         shape: RoundedRectangleBorder(

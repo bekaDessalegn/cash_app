@@ -35,7 +35,11 @@ class FeaturedBloc extends Bloc<FeaturedEvent, FeaturedState> {
     emit(FilterFeatureStateLoading());
     try {
       final products = await homeRepository.filterFetauredProducts();
-      emit(FilterFeatureStateSuccessful(products));
+      if(products.runtimeType.toString() == "List<LocalProducts>"){
+        emit(FeaturedSocketErrorState(products));
+      } else{
+        emit(FilterFeatureStateSuccessful(products));
+      }
     } on SocketException{
       emit(FilterFeatureStateFailed("Something went wrong please, try again"));
     } on Exception{
@@ -55,7 +59,11 @@ class TopSellerBloc extends Bloc<TopSellerEvent, TopSellerState> {
     emit(FilterTopSellerStateLoading());
     try {
       final products = await homeRepository.filterTopSellerProducts();
-      emit(FilterTopSellerStateSuccessful(products));
+      if(products.runtimeType.toString() == "List<LocalProducts>"){
+        emit(TopSellerSocketErrorState(products));
+      } else{
+        emit(FilterTopSellerStateSuccessful(products));
+      }
     } on SocketException{
       emit(FilterTopSellerStateFailed("Something went wrong please, try again"));
     } on Exception{

@@ -16,8 +16,8 @@ class _MobileContactUsScreenState extends State<MobileContactUsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(84)),
-        body: SafeArea(child: ContactUsBody()),
+      appBar: PreferredSize(child: customerHeader(context: context), preferredSize: Size.fromHeight(60)),
+        body: ContactUsBody(),
       bottomNavigationBar: customerBottomNavigationBar(context, 2),
     );
   }

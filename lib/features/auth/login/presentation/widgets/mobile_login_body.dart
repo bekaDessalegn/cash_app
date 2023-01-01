@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 class MobileLoginBody extends StatelessWidget {
 
   final _prefs = PrefService();
+  TextEditingController phoneOrEmailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,36 @@ class MobileLoginBody extends StatelessWidget {
               const SizedBox(
                 height: mediumSpacing,
               ),
-              PhoneTextFormField(),
+              boldText(value: "Phone or Email", size: defaultFontSize, color: onBackgroundColor),
+              const SizedBox(height: smallSpacing,),
+              TextFormField(
+                controller: phoneOrEmailController,
+                validator: (value){
+                  if(value!.isEmpty){
+                    return "Value can not be empty";
+                  }
+                  else{
+                    return null;
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "Enter your phone or email",
+                  hintStyle: const TextStyle(color: textInputPlaceholderColor),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(color: textInputBorderColor),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(defaultRadius),
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryColor),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: dangerColor),
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: defaultSpacing,
               ),
@@ -92,7 +122,7 @@ class MobileLoginBody extends StatelessWidget {
               SizedBox(
                 height: h / 20,
               ),
-              loginButton(context: context, text: "Sign in", isLoading: isLoading),
+              loginButton(context: context, text: "Sign in", isLoading: isLoading, phoneOrEmail: phoneOrEmailController.text),
               const SizedBox(
                 height: smallSpacing,
               ),

@@ -250,14 +250,6 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 10,),
-                Text(
-                  "Products",
-                  style: TextStyle(
-                      color: onBackgroundColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10,),
                 Row(
                   children: [
                     Expanded(
@@ -356,7 +348,7 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 20.0),
+          padding: const EdgeInsets.only(left: 20.0, right: 10),
           child: BlocBuilder<FeaturedBloc, FeaturedState>(builder: (_, state){
                 if(state is FilterFeatureStateSuccessful){
                   return state.products.length == 0 ? SizedBox() : Column(
@@ -573,16 +565,14 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
   }
 
   Widget affiliateFeaturedProducts({required List<Products> products}){
-    return SizedBox(
-      height: 348,
-      child: ListView.builder(
-          itemCount: products.length,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return affiliateProductsBox(context: context, product: products[index]);
-          }),
-    );
+    return GridView.builder(
+        itemCount: products.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 320),
+        itemBuilder: (context, index) {
+          return affiliateProductsBox(context: context, product: products[index]);
+        });
   }
 
   Widget affiliateAllProducts(){
@@ -708,43 +698,30 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
     );
   }
 
-  DropdownMenuItem<String> buildMenuLocation(String filter) => DropdownMenuItem(
-    value: filter,
-    child: Text(
-      filter,
-      style: TextStyle(
-        color: onBackgroundColor,
-        fontSize: 14,
-      ),
-    ),
-  );
-
   Widget loadingFeatured(){
-    return SizedBox(
-      height: 348,
-      child: ListView.builder(
-          itemCount: 6,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return Container(
-              width: 249,
-              height: 285,
-              margin: EdgeInsets.fromLTRB(0, 10, 50, 10),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0.0, 1.0), //(x,y)
-                    blurRadius: 2.0,
-                  ),
-                ],
-              ),
-            );
-          }
-      ),
+    return GridView.builder(
+        itemCount: 5,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 320),
+        itemBuilder: (context, index) {
+          return Container(
+            width: 300,
+            height: 220,
+            margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 2.0,
+                ),
+              ],
+            ),
+          );
+        }
     );
   }
 

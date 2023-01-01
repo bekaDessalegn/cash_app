@@ -18,10 +18,9 @@ Widget affiliateProductsBox({required BuildContext context, required Products pr
       child: Container(
         width: 249,
         height: 338,
-        margin: EdgeInsets.fromLTRB(0, 10, 30, 10),
+        margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
           boxShadow: [
             BoxShadow(
               color: Colors.grey,
@@ -35,19 +34,17 @@ Widget affiliateProductsBox({required BuildContext context, required Products pr
           children: [
             product.mainImage!.path == "null" ?
             Container(
-              height: 139,
+              height: 130,
               width: double.infinity,
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage("$baseUrl${product.mainImage!.path}"),
                       fit: BoxFit.cover),
-                  borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(10))),
+              ),
             ) : ClipRRect(
-                borderRadius: BorderRadius.circular(10),
                 child: smallImage(urlImage: "$baseUrl${product.mainImage!.path}")),
             SizedBox(
-              height: 30,
+              height: 10,
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 18),
@@ -61,7 +58,7 @@ Widget affiliateProductsBox({required BuildContext context, required Products pr
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: onBackgroundColor,
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -74,51 +71,46 @@ Widget affiliateProductsBox({required BuildContext context, required Products pr
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: onBackgroundColor,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                   SizedBox(height: 5,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Commission ",
-                        style: TextStyle(
-                            color: onBackgroundColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          "${product.commission} ETB",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: onBackgroundColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    "Commission ",
+                    style: TextStyle(
+                        color: onBackgroundColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Text(
+                    "${product.commission} ETB",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: onBackgroundColor,
+                      fontSize: 14,
+                    ),
                   ),
                   SizedBox(height: 25,),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(onPressed: (){
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context){
-                            return shareProductDialog(context: context, product: product);
-                          });
-                    },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 5)
-                        ),
-                        child: Text("Share", style: TextStyle(color: onPrimaryColor, fontSize: 16),)),
+                    child: GestureDetector(
+                      onTap: (){
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context){
+                              return shareProductDialog(context: context, product: product);
+                            });
+                      },
+                      child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text("Share", style: TextStyle(color: onPrimaryColor, fontSize: 14),)),
+                    ),
                   )
                 ],
               ),

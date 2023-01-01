@@ -33,7 +33,7 @@ class _MobileAffiliateProductDetailsState extends State<MobileAffiliateProductDe
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: mobileAffiliateHeader(context: context), preferredSize: Size.fromHeight(84)),
+      appBar: PreferredSize(child: mobileAffiliateHeader(context: context), preferredSize: Size.fromHeight(60)),
       body: BlocBuilder<SingleProductBloc, SingleProductState>(builder: (_, state) {
         if (state is GetSingleProductSuccessful) {
           return AffiliateProductDetailsBody(product: state.product);
@@ -70,7 +70,7 @@ class _MobileAffiliateProductDetailsState extends State<MobileAffiliateProductDe
         width: double.infinity,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 15),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 backgroundColor: primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),

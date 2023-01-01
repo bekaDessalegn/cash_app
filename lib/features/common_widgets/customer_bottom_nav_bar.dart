@@ -9,15 +9,16 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
+import 'package:iconify_flutter/icons/teenyicons.dart';
 
 Widget customerBottomNavigationBar(BuildContext context, int index){
 
   List<AffiliateHeaderItem> headerItems = [
+    AffiliateHeaderItem(title: "Home", icon: Teenyicons.home_outline, onTap: (){
+      context.go(APP_PAGE.aboutUs.toPath);
+    }),
     AffiliateHeaderItem(title: "Products", icon: Ph.package, onTap: (){
       context.go(APP_PAGE.product.toPath);
-    }),
-    AffiliateHeaderItem(title: "About us", icon: Mdi.information_outline, onTap: (){
-      context.go(APP_PAGE.aboutUs.toPath);
     }),
     AffiliateHeaderItem(title: "Contact us", icon: Ic.outline_local_phone, onTap: (){
       context.go(APP_PAGE.contactUs.toPath);
@@ -36,12 +37,12 @@ Widget customerBottomNavigationBar(BuildContext context, int index){
     },
     items: [
       BottomNavigationBarItem(
-        icon: Iconify(Ph.package, color: index == 0 ? primaryColor : onBackgroundColor,),
-        label: "Products",
+        icon: Iconify(Teenyicons.home_outline, color: index == 0 ? primaryColor : onBackgroundColor,),
+        label: "Home",
       ),
       BottomNavigationBarItem(
-        icon: Iconify(Mdi.information_outline, color: index == 1 ? primaryColor : onBackgroundColor,),
-        label: "About us",
+        icon: Iconify(Ph.package, color: index == 1 ? primaryColor : onBackgroundColor,),
+        label: "Products",
       ),
       BottomNavigationBarItem(
         icon: Iconify(Ic.outline_local_phone, color: index == 2 ? primaryColor : onBackgroundColor,),

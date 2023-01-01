@@ -13,7 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 Widget loginButton(
     {required BuildContext context,
     required String text,
-    required bool isLoading}) {
+    required bool isLoading,
+    required String phoneOrEmail
+    }) {
   return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -24,7 +26,7 @@ Widget loginButton(
               var hashedPassword = sha512.toString();
               print(hashedPassword);
               final signIn = BlocProvider.of<SignInBloc>(context);
-              signIn.add(PostSignInEvent(SignIn(phoneOrEmail: phoneOrEmail.text, passwordHash: hashedPassword)));
+              signIn.add(PostSignInEvent(SignIn(phoneOrEmail: phoneOrEmail, passwordHash: hashedPassword)));
             }
           },
           style: ElevatedButton.styleFrom(

@@ -245,7 +245,7 @@ class _ProfileBodyState extends State<ProfileBody> {
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
                           onTap: () {
-                            context.go(APP_PAGE.editEmail.toPath);
+                            context.push(APP_PAGE.editEmail.toPath);
                           },
                           child: Iconify(
                             Eva.edit_2_outline,
@@ -418,7 +418,7 @@ class _ProfileBodyState extends State<ProfileBody> {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                       onTap: () {
-                        context.go(APP_PAGE.editPassword.toPath);
+                        context.push(APP_PAGE.editPassword.toPath);
                       },
                       child: boldText(
                           value: "Change password", size: 16, color: primaryColor)),

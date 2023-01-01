@@ -10,7 +10,7 @@ class MobileAffiliateWalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(child: mobileAffiliateHeader(context: context), preferredSize: Size.fromHeight(84)),
+      appBar: PreferredSize(child: mobileAffiliateHeader(context: context), preferredSize: Size.fromHeight(60)),
       body: WalletBody(),
       bottomNavigationBar: bottomNavigationBar(context, 2),
     );

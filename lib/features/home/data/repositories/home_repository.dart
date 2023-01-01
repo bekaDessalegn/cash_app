@@ -25,7 +25,7 @@ class HomeRepository {
     }
   }
 
-  Future<List<Products>> filterFetauredProducts() async{
+  Future filterFetauredProducts() async{
     try{
       print("Filter Published Products Success");
       final products = await homeDataSource.filterFeaturedProducts();
@@ -39,7 +39,7 @@ class HomeRepository {
     }
   }
 
-  Future<List<Products>> filterTopSellerProducts() async{
+  Future filterTopSellerProducts() async{
     try{
       print("Filter Top Seller Products Success");
       final products = await homeDataSource.filterTopSellerProducts();
