@@ -2,6 +2,7 @@ class LocalProducts {
   final String productId;
   final String productName;
   final num price;
+  final num commission;
   final bool published;
   final bool featured;
   final bool topSeller;
@@ -11,6 +12,7 @@ class LocalProducts {
       { required this.productId,
         required this.productName,
         required this.price,
+        required this.commission,
         required this.published,
         required this.featured,
         required this.topSeller,
@@ -21,6 +23,7 @@ class LocalProducts {
       productId: json["productId"],
       productName: json["productName"],
       price: json["price"],
+      commission: json["commission"],
       published: json["published"] == 1 ? true : false,
       featured: json["featured"] == 1 ? true : false,
       topSeller: json["topSeller"] == 1 ? true : false,
@@ -30,6 +33,7 @@ class LocalProducts {
     "productId" : productId,
     "productName" : productName,
     "price" : price,
+    "commission" : commission,
     "published" : published ? 1 : 0,
     "featured" : featured ? 1 : 0,
     "topSeller" : topSeller ? 1 : 0,

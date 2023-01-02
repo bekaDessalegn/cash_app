@@ -16,7 +16,11 @@ class SingleAffiliateBloc extends Bloc<SingleAffiliateEvent, SingleAffiliateStat
     emit(GetSingleAffiliateLoadingState());
     try{
       final affiliate = await affiliatesRepository.getAffiliate();
-      emit(GetSingleAffiliateSuccessfulState(affiliate));
+      if(affiliate.runtimeType.toString() == "LocalAffiliate"){
+        emit(GetSingleAffiliateSocketErrorState(affiliate));
+      } else{
+        emit(GetSingleAffiliateSuccessfulState(affiliate));
+      }
     } catch(e){
       emit(GetSingleAffiliateFailedState("Something went wrong"));
     }

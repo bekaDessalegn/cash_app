@@ -1,23 +1,19 @@
 import 'package:cash_app/features/home/data/models/image.dart';
 
 class AboutUsContent {
-  final ImageContent aboutUsImage;
-  final ImageContent whyUsImage;
-  final String whyUsTitle;
-  final String whyUsDescription;
-  final ImageContent whoAreWeImage;
-  final String whoAreWeDescription;
+  final ImageContent heroImage;
+  final String heroShortTitle;
+  final String heroLongTitle;
+  final String heroDescription;
   final String whoAreWeVideoLink;
   final String howToBuyFromUsDescription;
   final String howToAffiliateWithUsDescription;
   final String howToAffiliateWithUsVideoLink;
 
-  AboutUsContent({required this.aboutUsImage,
-    required this.whyUsImage,
-    required this.whyUsTitle,
-    required this.whyUsDescription,
-    required this.whoAreWeImage,
-    required this.whoAreWeDescription,
+  AboutUsContent({required this.heroImage,
+    required this.heroShortTitle,
+    required this.heroLongTitle,
+    required this.heroDescription,
     required this.whoAreWeVideoLink,
     required this.howToBuyFromUsDescription,
     required this.howToAffiliateWithUsDescription,
@@ -25,12 +21,10 @@ class AboutUsContent {
 
   factory AboutUsContent.fromJson(Map<String, dynamic> json) =>
       AboutUsContent(
-          aboutUsImage: ImageContent.fromJson(json["aboutUsImage"]),
-          whyUsImage: ImageContent.fromJson(json["whyUsImage"]),
-          whyUsTitle: json["whyUsTitle"],
-          whyUsDescription: json["whyUsDescription"],
-          whoAreWeImage: ImageContent.fromJson(json["whoAreWeImage"]),
-          whoAreWeDescription: json["whoAreWeDescription"],
+          heroImage: ImageContent.fromJson(json["heroImage"]),
+          heroShortTitle: json["heroShortTitle"],
+          heroLongTitle: json["heroLongTitle"],
+          heroDescription: json["heroDescription"],
           whoAreWeVideoLink: json["whoAreWeVideoLink"],
           howToBuyFromUsDescription: json["howToBuyFromUsDescription"],
           howToAffiliateWithUsDescription: json["howToAffiliateWithUsDescription"],

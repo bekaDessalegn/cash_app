@@ -7,13 +7,13 @@ import 'package:cash_app/features/auth/login/presentation/blocs/signin_bloc.dart
 import 'package:cash_app/features/auth/login/presentation/blocs/signin_state.dart';
 import 'package:cash_app/features/auth/login/presentation/widgets/login_button.dart';
 import 'package:cash_app/features/auth/login/presentation/widgets/password_textformfield.dart';
+import 'package:cash_app/features/auth/login/presentation/widgets/phone_textformfield.dart';
 import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/language_picker_widget.dart';
 import 'package:cash_app/features/common_widgets/bold_text.dart';
 import 'package:cash_app/features/common_widgets/main_logo.dart';
 import 'package:cash_app/features/common_widgets/normal_button.dart';
 import 'package:cash_app/features/common_widgets/normal_text.dart';
-import 'package:cash_app/features/auth/login/presentation/widgets/phone_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -77,36 +77,7 @@ class MobileLoginBody extends StatelessWidget {
               const SizedBox(
                 height: mediumSpacing,
               ),
-              boldText(value: "Phone or Email", size: defaultFontSize, color: onBackgroundColor),
-              const SizedBox(height: smallSpacing,),
-              TextFormField(
-                controller: phoneOrEmailController,
-                validator: (value){
-                  if(value!.isEmpty){
-                    return "Value can not be empty";
-                  }
-                  else{
-                    return null;
-                  }
-                },
-                decoration: InputDecoration(
-                  hintText: "Enter your phone or email",
-                  hintStyle: const TextStyle(color: textInputPlaceholderColor),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: textInputBorderColor),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(defaultRadius),
-                    ),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor),
-                  ),
-                  errorBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: dangerColor),
-                  ),
-                ),
-              ),
+              phoneOrEmailWidget(),
               const SizedBox(
                 height: defaultSpacing,
               ),
@@ -122,7 +93,7 @@ class MobileLoginBody extends StatelessWidget {
               SizedBox(
                 height: h / 20,
               ),
-              loginButton(context: context, text: "Sign in", isLoading: isLoading, phoneOrEmail: phoneOrEmailController.text),
+              loginButton(context: context, text: "Sign in", isLoading: isLoading),
               const SizedBox(
                 height: smallSpacing,
               ),

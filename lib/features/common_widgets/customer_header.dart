@@ -1,5 +1,7 @@
 import 'package:cash_app/core/constants.dart';
 import 'package:cash_app/core/router/route_utils.dart';
+import 'package:cash_app/features/auth/login/presentation/screens/login_screen.dart';
+import 'package:cash_app/features/auth/signup/presentation/screens/signup_screen.dart';
 import 'package:cash_app/features/common_widgets/main_logo.dart';
 import 'package:cash_app/features/common_widgets/share_button.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +27,17 @@ Widget customerHeader({required BuildContext context}){
               Row(
                 children: [
                   TextButton(onPressed: (){
-                    context.push(APP_PAGE.login.toPath);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MobileLoginScreen()));
                   }, child: Text("Sign in")),
+                  Text(
+                    "|",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 17,
+                    ),
+                  ),
                   TextButton(onPressed: (){
-                    context.push(APP_PAGE.signup.toPath);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MobileSignUpScreen()));
                   }, child: Text("Sign up")),
                 ],
               )

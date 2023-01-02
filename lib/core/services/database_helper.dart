@@ -19,6 +19,7 @@ class DatabaseHelper{
           productId TEXT PRIMARY KEY,
           productName TEXT,
           price REAL,
+          commission REAL,
           published BOOLEAN,
           featured BOOLEAN,
           topSeller BOOLEAN,
@@ -29,6 +30,29 @@ class DatabaseHelper{
           CREATE TABLE LogoImage(
           id TEXT PRIMARY KEY,
           logoImage BLOB
+          )"""
+          );
+          await db.execute("""
+          CREATE TABLE Affiliate(
+          userId TEXT PRIMARY KEY,
+          fullName TEXT,
+          phone TEXT,
+          email TEXT,
+          totalRequests REAL,
+          acceptedRequests REAL,
+          rejectedRequests REAL,
+          totalMade REAL,
+          currentBalance REAL,
+          canWithdrawAfter REAL,
+          memberSince TEXT
+          )"""
+          );
+          await db.execute("""
+          CREATE TABLE Transactions(
+          transactionId TEXT PRIMARY KEY,
+          kind TEXT,
+          amount REAL,
+          transactedAt TEXT
           )"""
           );
         },

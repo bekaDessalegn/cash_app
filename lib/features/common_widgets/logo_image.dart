@@ -1,4 +1,6 @@
+import 'package:cash_app/core/constants.dart';
 import 'package:cash_app/core/global.dart';
+import 'package:cash_app/features/common_widgets/blink_container.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
@@ -29,14 +31,7 @@ class _PlatformLogoImageState extends State<PlatformLogoImage> {
     return BlocBuilder<LogoImageBloc, LogoImageState>(
         builder: (_, state) {
           if (state is GetLogoImageLoadingState) {
-            return Container(
-              width: widget.logoWidth,
-              height: widget.logoHeight,
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(widget.logoBorderRadius)
-              ),
-            );
+            return BlinkContainer(width: widget.logoWidth, height: widget.logoHeight, borderRadius: widget.logoBorderRadius);
           } else if (state is GetLogoImageSuccessfulState) {
             return ClipRRect(
                 borderRadius: BorderRadius.circular(widget.logoBorderRadius),

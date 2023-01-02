@@ -10,11 +10,11 @@ import 'package:cash_app/features/about_us/data/repositories/about_us_repository
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_bloc.dart';
 import 'package:cash_app/features/about_us/presentation/blocs/about_us_event.dart';
 import 'package:cash_app/features/affiliate_product/data/models/selected_affiliate_categories.dart';
-import 'package:cash_app/features/affiliate_profile/data/datasources/affiliates_datasource.dart';
+import 'package:cash_app/features/affiliate_profile/data/datasources/remote/affiliates_datasource.dart';
 import 'package:cash_app/features/affiliate_profile/data/repositories/affiliates_repository.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/blocs/affiliates_bloc.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/blocs/affiliates_event.dart';
-import 'package:cash_app/features/affiliate_wallet/data/datasources/transaction_datasource.dart';
+import 'package:cash_app/features/affiliate_wallet/data/datasources/remote/transaction_datasource.dart';
 import 'package:cash_app/features/affiliate_wallet/data/repositories/transaction_repository.dart';
 import 'package:cash_app/features/affiliate_wallet/presentation/blocs/transactions_bloc.dart';
 import 'package:cash_app/features/auth/login/data/datasources/signin_datasource.dart';

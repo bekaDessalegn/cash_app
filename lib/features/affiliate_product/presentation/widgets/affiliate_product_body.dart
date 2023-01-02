@@ -5,16 +5,20 @@ import 'package:cash_app/features/affiliate_product/data/models/selected_affilia
 import 'package:cash_app/features/affiliate_product/presentation/widgets/affiliate_all_product_box.dart';
 import 'package:cash_app/features/affiliate_product/presentation/widgets/affiliate_product_box.dart';
 import 'package:cash_app/features/affiliate_product/presentation/widgets/affiliate_search_widget.dart';
+import 'package:cash_app/features/affiliate_product/presentation/widgets/local_affiliate_all_products.dart';
+import 'package:cash_app/features/affiliate_profile/data/models/local_affiliate.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
 import 'package:cash_app/features/common_widgets/error_failed_widget.dart';
 import 'package:cash_app/features/common_widgets/error_flashbar.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
 import 'package:cash_app/features/common_widgets/no_data_box.dart';
+import 'package:cash_app/features/common_widgets/not_connected.dart';
 import 'package:cash_app/features/common_widgets/product_search_widget.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
 import 'package:cash_app/features/home/presentation/blocs/home_state.dart';
 import 'package:cash_app/features/products/data/models/categories.dart';
+import 'package:cash_app/features/products/data/models/local_products.dart';
 import 'package:cash_app/features/products/data/models/product_image.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:cash_app/features/products/data/models/selectedCategory.dart';
@@ -24,12 +28,14 @@ import 'package:cash_app/features/products/presentation/blocs/categories/categor
 import 'package:cash_app/features/products/presentation/blocs/products/products_bloc.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_event.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_state.dart';
+import 'package:cash_app/features/products/presentation/widgets/local_affiliate_product_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mi.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -230,6 +236,10 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
       }});
     final categories = BlocProvider.of<CategoriesBloc>(context);
     categories.add(GetCategoriesEvent());
+    final prod = BlocProvider.of<FeaturedBloc>(context);
+    prod.add(FilterFeaturedEvent());
+    final prodT = BlocProvider.of<TopSellerBloc>(context);
+    prodT.add(FilterTopSellerEvent());
     if(isWelcome){
       welcome();
     }
@@ -244,6 +254,11 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Visibility(
+            visible: Provider.of<InternetConnectionStatus>(context) ==
+                InternetConnectionStatus.disconnected,
+            child: internetNotAvailable(context: context),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
@@ -278,24 +293,6 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                         ),
                       ),
                     ),
-                    // Container(
-                    //   width: 40,
-                    //   margin: EdgeInsets.only(right: 10),
-                    //   child: DropdownButtonHideUnderline(
-                    //     child: DropdownButton<String>(
-                    //       icon: Visibility(visible: false, child: Icon(Icons.arrow_downward)),
-                    //       // value: values,
-                    //       isExpanded: true,
-                    //       hint: Iconify(Mi.filter, size: 40, color: onBackgroundColor,),
-                    //       focusColor: Colors.transparent,
-                    //       items: filter.map(buildMenuLocation).toList(),
-                    //       onChanged: (value) => setState(() {
-                    //         this.value = value;
-                    //         print(value);
-                    //       }),
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
                 SizedBox(height: 20,),
@@ -365,6 +362,23 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                       affiliateFeaturedProducts(products: state.products),
                     ],
                   );
+                } else if(state is FeaturedSocketErrorState){
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Featured Products",
+                        style: TextStyle(
+                            color: onBackgroundColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      localAffiliateFeaturedProducts(localProducts: state.localProducts),
+                    ],
+                  );
                 }
                 else if(state is FilterFeatureStateFailed){
                   return Center(
@@ -421,6 +435,23 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                 BlocProvider.of<TopSellerBloc>(context);
                 products.add(FilterTopSellerEvent());
               }),);
+            }else if(state is TopSellerSocketErrorState){
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Top Seller Products",
+                    style: TextStyle(
+                        color: onBackgroundColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  localAffiliateFeaturedProducts(localProducts: state.localProducts),
+                ],
+              );
             } else if(state is FilterTopSellerStateLoading){
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -540,6 +571,8 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                   return _allProducts.isEmpty
                       ? Center(child: noDataBox(text: "No Products!", description: "Products will appear here."))
                       : affiliateAllProducts();
+                } else if(state is SocketErrorState){
+                  return localAffiliateAllProducts(localProducts: state.localProducts);
                 } else if(state is GetProductsLoading){
                   return Center(child: loadingBox(),);
                 }
@@ -575,23 +608,21 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
         });
   }
 
+  Widget localAffiliateFeaturedProducts({required List<LocalProducts> localProducts}){
+    return GridView.builder(
+        itemCount: localProducts.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 320),
+        itemBuilder: (context, index) {
+          return localAffiliateProductsBox(context: context, product: localProducts[index]);
+        });
+  }
+
   Widget affiliateAllProducts(){
     return Column(
       children: [
-        MediaQuery.of(context).size.width > 600
-            ? GridView.builder(
-            controller: _allProductsController,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, mainAxisExtent: 360),
-            itemCount: _allProducts.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: affiliateAllProductsBox(context: context, product: _allProducts[index]),
-              );
-            })
-            : ListView.builder(
+        ListView.builder(
             controller: _allProductsController,
             itemCount: _allProducts.length,
             shrinkWrap: true,
@@ -607,6 +638,16 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
           ),
       ],
     );
+  }
+
+  Widget localAffiliateAllProducts({required List<LocalProducts> localProducts}){
+    return ListView.builder(
+        itemCount: localProducts.length,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return localAffiliateAllProductsBox(context: context, product: localProducts[index]);
+        });
   }
 
   Widget affiliateSearchProducts({required List<Products> products}){

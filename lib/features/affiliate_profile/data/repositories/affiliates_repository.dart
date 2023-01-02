@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cash_app/features/affiliate_profile/data/datasources/affiliates_datasource.dart';
+import 'package:cash_app/features/affiliate_profile/data/datasources/remote/affiliates_datasource.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/affiliates.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/avatar.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/children.dart';
@@ -10,7 +10,7 @@ class AffiliatesRepository {
   AffiliatesDataSource affiliatesDataSource;
   AffiliatesRepository(this.affiliatesDataSource);
 
-  Future<Affiliates> getAffiliate() async {
+  Future getAffiliate() async {
     try{
       print("Get Affiliate Success");
       final affiliate = await affiliatesDataSource.getAffiliate();

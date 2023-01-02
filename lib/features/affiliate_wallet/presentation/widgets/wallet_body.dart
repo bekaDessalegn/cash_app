@@ -1,23 +1,29 @@
 import 'package:cash_app/core/constants.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/affiliates.dart';
+import 'package:cash_app/features/affiliate_profile/data/models/local_affiliate.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/blocs/affiliates_bloc.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/blocs/affiliates_event.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/blocs/affiliates_state.dart';
+import 'package:cash_app/features/affiliate_wallet/data/models/local_transactions.dart';
 import 'package:cash_app/features/affiliate_wallet/data/models/transactions.dart';
 import 'package:cash_app/features/affiliate_wallet/presentation/blocs/transactions_bloc.dart';
 import 'package:cash_app/features/affiliate_wallet/presentation/blocs/transactions_event.dart';
 import 'package:cash_app/features/affiliate_wallet/presentation/blocs/transactions_state.dart';
+import 'package:cash_app/features/affiliate_wallet/presentation/widgets/local_transaction_detail_box.dart';
 import 'package:cash_app/features/affiliate_wallet/presentation/widgets/transaction_detail_box.dart';
 import 'package:cash_app/features/affiliate_wallet/presentation/widgets/wallet_box.dart';
 import 'package:cash_app/features/common_widgets/affiliate_mobile_header.dart';
 import 'package:cash_app/features/common_widgets/bottom_navigationbar.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
 import 'package:cash_app/features/common_widgets/no_data_box.dart';
+import 'package:cash_app/features/common_widgets/not_connected.dart';
 import 'package:cash_app/features/common_widgets/product_search_widget.dart';
 import 'package:cash_app/features/common_widgets/something_went_wrong_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:provider/provider.dart';
 
 class WalletBody extends StatefulWidget {
   const WalletBody({Key? key}) : super(key: key);
@@ -110,10 +116,17 @@ class _WalletBodyState extends State<WalletBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Visibility(
+            visible: Provider.of<InternetConnectionStatus>(context) ==
+                InternetConnectionStatus.disconnected,
+            child: internetNotAvailable(context: context),
+          ),
           BlocConsumer<SingleAffiliateBloc, SingleAffiliateState>(
               builder: (_, state) {
             if (state is GetSingleAffiliateSuccessfulState) {
               return walletBody(affiliate: state.affiliate);
+            } else if(state is GetSingleAffiliateSocketErrorState){
+              return localWalletBody(affiliate: state.localAffiliate);
             } else if (state is GetSingleAffiliateLoadingState) {
               return loadingWallet();
             } else {
@@ -155,6 +168,8 @@ class _WalletBodyState extends State<WalletBody> {
                   return _allTransactions.isEmpty
                       ? Center(child: noDataBox(text: "No Transactions!", description: "Transactions will appear here."))
                       : transactionBody();
+                } else if (state is GetAffiliateTransactionsSocketErrorState) {
+                  return localTransactionBody(transactions: state.transactions);
                 } else if(state is GetAffiliateTransactionsLoadingState){
                   return loadingTransactions();
                 } else if (state is GetAffiliateTransactionsFailedState) {
@@ -227,6 +242,50 @@ class _WalletBodyState extends State<WalletBody> {
     );
   }
 
+  Widget localWalletBody({required LocalAffiliate affiliate}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(child: walletBox(value: "${affiliate.totalMade.toStringAsFixed(2)}", type: "Earned")),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(child: walletBox(value: "${affiliate.currentBalance.toStringAsFixed(2)}", type: "Available")),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
+              onPressed: () {},
+              child: Text(
+                "Withdraw",
+                style: TextStyle(color: onPrimaryColor, fontSize: 20),
+              )),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Divider(
+          color: surfaceColor,
+          thickness: 1.0,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
+
   Widget transactionBody() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,6 +308,16 @@ class _WalletBodyState extends State<WalletBody> {
           ),
       ],
     );
+  }
+
+  Widget localTransactionBody({required List<LocalTransactions> transactions}) {
+    return ListView.builder(
+        itemCount: transactions.length,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return localTransactionByDetailBox(transaction: transactions[index]);
+        });
   }
 
   Widget loadingWallet(){

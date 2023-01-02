@@ -76,7 +76,7 @@ class _ContactUsBodyState extends State<ContactUsBody> {
             Visibility(
               visible: Provider.of<InternetConnectionStatus>(context) ==
                   InternetConnectionStatus.disconnected,
-              child: internetNotAvailable(context: context, message: "No Internet Connection!!!"),
+              child: internetNotAvailable(context: context),
             ),
             SizedBox(
               height: 10,

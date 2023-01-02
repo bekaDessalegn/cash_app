@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cash_app/core/global.dart';
 import 'package:cash_app/core/services/auth_service.dart';
 import 'package:cash_app/core/services/shared_preference_service.dart';
+import 'package:cash_app/features/affiliate_wallet/data/datasources/local/local_transactions_datasource.dart';
+import 'package:cash_app/features/affiliate_wallet/data/models/local_transactions.dart';
 import 'package:cash_app/features/affiliate_wallet/data/models/transactions.dart';
 import 'package:http/http.dart' as http;
 
 class TransactionDataSource {
   AuthService authService = AuthService();
   final _prefs = PrefService();
+  TransactionsLocalDb transactionsLocalDb = TransactionsLocalDb();
 
   var refreshToken;
   var accessToken;
@@ -42,7 +46,7 @@ class TransactionDataSource {
       print("Meneshet mneshet");
       print(data);
       await authService.setAccessToken(accessToken: data["newAccessToken"]);
-    } else if(data["message"] == "Invalid_Refresh_Token"){
+    } else if (data["message"] == "Invalid_Refresh_Token") {
       print("IT has entered");
       _prefs.removeCache();
       _prefs.removeAffiliateId();
@@ -53,8 +57,7 @@ class TransactionDataSource {
     }
   }
 
-  Future<List<Transactions>> getAffiliateTransactions(int skipNumber) async {
-
+  Future getAffiliateTransactions(int skipNumber) async {
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -68,9 +71,10 @@ class TransactionDataSource {
       'Api-Key': apiKey,
       'Authorization': 'Bearer $accessToken'
     };
-    var url = Uri.parse('$baseUrl/affiliates/$userId/transactions?limit=$limit&skip=$skipNumber');
+    var url = Uri.parse(
+        '$baseUrl/affiliates/$userId/transactions?limit=$limit&skip=$skipNumber');
 
-    try{
+    try {
       var res = await http.get(url, headers: headersList);
       final resBody = res.body;
 
@@ -79,25 +83,36 @@ class TransactionDataSource {
       if (res.statusCode >= 200 && res.statusCode < 300) {
         print(data);
         List contents = json.decode(resBody);
-        List<Transactions> transactions = contents.map((transaction) => Transactions.fromJson(transaction)).toList();
+
+        for (var transaction in data) {
+          await transactionsLocalDb.addTransactions(LocalTransactions(
+              transactionId: transaction["transactionId"],
+              kind: transaction["reason"]["kind"],
+              amount: transaction["amount"],
+              transactedAt: transaction["transactedAt"]));
+          print("Has entered");
+        }
+
+        List<Transactions> transactions = contents
+            .map((transaction) => Transactions.fromJson(transaction))
+            .toList();
         return transactions;
       } else if (data["message"] == "Not_Authorized") {
         print("ON 401 : $data");
         await getNewAccessToken();
         return await getAffiliateTransactions(skipNumber);
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
-    } catch(e){
-      print(e);
-      throw Exception();
+    } on SocketException {
+      final localTransactions = await transactionsLocalDb.getListTransactions();
+      return localTransactions;
     }
   }
 }

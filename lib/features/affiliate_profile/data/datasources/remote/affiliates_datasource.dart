@@ -4,16 +4,19 @@ import 'dart:io';
 import 'package:cash_app/core/global.dart';
 import 'package:cash_app/core/services/auth_service.dart';
 import 'package:cash_app/core/services/shared_preference_service.dart';
+import 'package:cash_app/features/affiliate_profile/data/datasources/local/local_affiliate_datasource.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/affiliates.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/avatar.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/children.dart';
+import 'package:cash_app/features/affiliate_profile/data/models/local_affiliate.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/parent_affiliate.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-class AffiliatesDataSource{
+class AffiliatesDataSource {
   AuthService authService = AuthService();
   final _prefs = PrefService();
+  AffiliateLocalDb affiliateLocalDb = AffiliateLocalDb();
 
   var refreshToken;
   var accessToken;
@@ -46,7 +49,7 @@ class AffiliatesDataSource{
       print("Meneshet mneshet");
       print(data);
       await authService.setAccessToken(accessToken: data["newAccessToken"]);
-    } else if(data["message"] == "Invalid_Refresh_Token"){
+    } else if (data["message"] == "Invalid_Refresh_Token") {
       print(data);
       print("IT has entered");
       _prefs.removeCache();
@@ -59,7 +62,7 @@ class AffiliatesDataSource{
     }
   }
 
-  Future<Affiliates> getAffiliate() async {
+  Future getAffiliate() async {
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -77,7 +80,7 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId');
 
-    try{
+    try {
       var res = await http.get(url, headers: headersList);
       final resBody = res.body;
 
@@ -87,24 +90,51 @@ class AffiliatesDataSource{
         print(data);
         await _prefs.createUserId(data["userId"]);
         final affiliate = Affiliates.fromJson(data);
+
+        await affiliateLocalDb.addAffiliate(LocalAffiliate(
+            userId: data["userId"],
+            fullName: data["fullName"],
+            phone: data["phone"],
+            email: data["email"],
+            totalRequests: data["affiliationSummary"]["totalRequests"],
+            acceptedRequests: data["affiliationSummary"]["acceptedRequests"],
+            rejectedRequests: data["affiliationSummary"]["rejectedRequests"],
+            totalMade: data["wallet"]["totalMade"],
+            currentBalance: data["wallet"]["currentBalance"],
+            canWithdrawAfter: data["wallet"]["canWithdrawAfter"],
+            memberSince: data["memberSince"]));
+
+        final updated = await affiliateLocalDb.updateAffiliate(
+            data["userId"],
+            LocalAffiliate(
+                userId: data["userId"],
+                fullName: data["fullName"],
+                phone: data["phone"],
+                email: data["email"],
+                totalRequests: data["affiliationSummary"]["totalRequests"],
+                acceptedRequests: data["affiliationSummary"]["acceptedRequests"],
+                rejectedRequests: data["affiliationSummary"]["rejectedRequests"],
+                totalMade: data["wallet"]["totalMade"],
+                currentBalance: data["wallet"]["currentBalance"],
+                canWithdrawAfter: data["wallet"]["canWithdrawAfter"],
+                memberSince: data["memberSince"])
+                .toJson());
         return affiliate;
       } else if (data["message"] == "Not_Authorized") {
         print("ON 401 : $data");
         await getNewAccessToken();
         return await getAffiliate();
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
+      } else {
+        throw Exception("api");
       }
-      else {
-        print(data);
-        throw Exception();
-      }
-    } catch(e){
-      print(e);
-      throw Exception();
+    } on SocketException {
+      final affiliate = await affiliateLocalDb.getAffiliate();
+      return affiliate;
     }
   }
 
@@ -122,14 +152,15 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$parentId');
 
-    try{
+    try {
       var res = await http.get(url, headers: headersList);
       final resBody = res.body;
 
       var data = json.decode(resBody);
 
       if (res.statusCode >= 200 && res.statusCode < 300) {
-        print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt");
+        print(
+            "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt");
         print(data);
         final affiliate = ParentAffiliate.fromJson(data);
         print(affiliate);
@@ -138,12 +169,11 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await getParentAffiliate(parentId);
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
-    } catch(e){
+    } catch (e) {
       print(e);
       throw Exception();
     }
@@ -165,11 +195,14 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId/avatar');
 
-    try{
+    try {
       var req = http.MultipartRequest('PUT', url);
       req.headers.addAll(headersList);
       if (avatar.path != "[0, 0, 0, 0, 0, 0, 0, 0]") {
-        req.files.add(await http.MultipartFile.fromBytes('avatar', json.decode(avatar.path!).cast<int>(), contentType: MediaType("${imageType[0]}", "${imageType[1]}"), filename: "Any_name"));
+        req.files.add(await http.MultipartFile.fromBytes(
+            'avatar', json.decode(avatar.path!).cast<int>(),
+            contentType: MediaType("${imageType[0]}", "${imageType[1]}"),
+            filename: "Any_name"));
       }
 
       var res = await req.send();
@@ -187,24 +220,22 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await putAvatar(avatar, imageType);
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
-    } catch(e){
+    } catch (e) {
       print(e);
       throw Exception();
     }
   }
 
   Future<List<Children>> getChildren() async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -220,7 +251,7 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId/children');
 
-    try{
+    try {
       var res = await http.get(url, headers: headersList);
       final resBody = res.body;
 
@@ -228,31 +259,30 @@ class AffiliatesDataSource{
 
       if (res.statusCode >= 200 && res.statusCode < 300) {
         List content = json.decode(resBody);
-        List<Children> children = content.map((child) => Children.fromJson(child)).toList();
+        List<Children> children =
+            content.map((child) => Children.fromJson(child)).toList();
         print(data);
         return children;
       } else if (data["message"] == "Not_Authorized") {
         print("ON 401 : $data");
         await getNewAccessToken();
         return await getChildren();
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
-    } catch(e){
+    } catch (e) {
       print(e);
       throw Exception();
     }
   }
 
   Future patchFullName(String fullName) async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -269,12 +299,11 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId/full-name');
 
-    var body = {
-      "newFullName": fullName
-    };
+    var body = {"newFullName": fullName};
 
-    try{
-      var res = await http.patch(url, headers: headersList, body: json.encode(body));
+    try {
+      var res =
+          await http.patch(url, headers: headersList, body: json.encode(body));
       final resBody = res.body;
 
       var data = json.decode(resBody);
@@ -285,24 +314,22 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await patchFullName(fullName);
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
-    } catch(e){
+    } catch (e) {
       print(e);
       throw Exception();
     }
   }
 
   Future patchPhone(String phone) async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -319,12 +346,11 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId/phone');
 
-    var body = {
-      "newPhone": phone
-    };
+    var body = {"newPhone": phone};
 
-    try{
-      var res = await http.patch(url, headers: headersList, body: json.encode(body));
+    try {
+      var res =
+          await http.patch(url, headers: headersList, body: json.encode(body));
       final resBody = res.body;
 
       var data = json.decode(resBody);
@@ -335,25 +361,25 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await patchPhone(phone);
-      } else if(data["message"] == "Affiliate_Phone_Already_Exist" || data["message"] == "Invalid_Phone") {
+      } else if (data["message"] == "Affiliate_Phone_Already_Exist" ||
+          data["message"] == "Invalid_Phone") {
         print(data);
         return data["message"];
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      } else{
+      } else {
         print(data);
         throw Exception();
       }
-    } on SocketException{
+    } on SocketException {
       throw Exception();
     }
   }
 
   Future patchEmail(String email) async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -370,12 +396,11 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId/email');
 
-    var body = {
-      "newEmail": email
-    };
+    var body = {"newEmail": email};
 
-    try{
-      var res = await http.patch(url, headers: headersList, body: json.encode(body));
+    try {
+      var res =
+          await http.patch(url, headers: headersList, body: json.encode(body));
       final resBody = res.body;
 
       var data = json.decode(resBody);
@@ -387,25 +412,24 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await patchEmail(email);
-      } else if(data["message"] == "Affiliate_Email_Already_Exist") {
+      } else if (data["message"] == "Affiliate_Email_Already_Exist") {
         print(data);
         throw const HttpException("Affiliate_Email_Already_Exist");
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      } else{
+      } else {
         print(data);
         throw Exception();
       }
-    } on SocketException{
+    } on SocketException {
       throw Exception();
     }
   }
 
   Future verifyEmail(String verificationCode) async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -428,7 +452,8 @@ class AffiliatesDataSource{
     };
 
     try {
-      var res = await http.patch(url, headers: headersList, body: json.encode(body));
+      var res =
+          await http.patch(url, headers: headersList, body: json.encode(body));
       final resBody = res.body;
 
       var data = json.decode(resBody);
@@ -439,20 +464,20 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await verifyEmail(verificationCode);
-      } else if(data["message"] == "Wrong_Verification_Code" || data["message"] == "Expired_Token") {
+      } else if (data["message"] == "Wrong_Verification_Code" ||
+          data["message"] == "Expired_Token") {
         print(data);
         throw const HttpException("Invalid Verification Code");
-      } else{
+      } else {
         print(data);
         throw Exception();
       }
-    } on SocketException{
+    } on SocketException {
       throw Exception();
     }
   }
 
-  Future patchPassword(String oldPasswordHash, String newPasswordHash) async{
-
+  Future patchPassword(String oldPasswordHash, String newPasswordHash) async {
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -474,8 +499,9 @@ class AffiliatesDataSource{
       "newPasswordHash": newPasswordHash
     };
 
-    try{
-      var res = await http.patch(url, headers: headersList, body: json.encode(body));
+    try {
+      var res =
+          await http.patch(url, headers: headersList, body: json.encode(body));
       final resBody = res.body;
 
       var data = json.decode(resBody);
@@ -486,25 +512,24 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await patchPassword(oldPasswordHash, newPasswordHash);
-      } else if(data["message"] == "Wrong_Password_Hash") {
+      } else if (data["message"] == "Wrong_Password_Hash") {
         print(data);
         throw const HttpException("Wrong_Password_Hash");
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      } else{
+      } else {
         print(data);
         throw Exception();
       }
-    } on SocketException{
+    } on SocketException {
       throw Exception();
     }
   }
 
   Future deleteAvatar() async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -520,7 +545,7 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId/avatar');
 
-    try{
+    try {
       var res = await http.delete(url, headers: headersList);
       final resBody = res.body;
 
@@ -532,24 +557,22 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await deleteAvatar();
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      }
-      else {
+      } else {
         print(data);
         throw Exception();
       }
-    } catch(e){
+    } catch (e) {
       print(e);
       throw Exception();
     }
   }
 
   Future deleteAffiliate(String passwordHash) async {
-
     await getAccessTokens().then((value) {
       accessToken = value;
     });
@@ -566,12 +589,11 @@ class AffiliatesDataSource{
     };
     var url = Uri.parse('$baseUrl/affiliates/$userId');
 
-    var body = {
-      "passwordHash": passwordHash
-    };
+    var body = {"passwordHash": passwordHash};
 
-    try{
-      var res = await http.delete(url, headers: headersList, body: json.encode(body));
+    try {
+      var res =
+          await http.delete(url, headers: headersList, body: json.encode(body));
       final resBody = res.body;
 
       var data = json.decode(resBody);
@@ -582,19 +604,19 @@ class AffiliatesDataSource{
         print("ON 401 : $data");
         await getNewAccessToken();
         return await deleteAffiliate(passwordHash);
-      } else if(data["message"] == "User_Not_Found") {
+      } else if (data["message"] == "User_Not_Found") {
         _prefs.removeCache();
         _prefs.removeAffiliateId();
         authService.logOut();
         throw Exception();
-      } else if(data["message"] == "Wrong_Password_Hash"){
+      } else if (data["message"] == "Wrong_Password_Hash") {
         print(data);
         throw const HttpException("404");
-      } else{
+      } else {
         print(data);
         throw Exception();
       }
-    } on SocketException{
+    } on SocketException {
       throw Exception();
     }
   }
@@ -628,11 +650,9 @@ class AffiliatesDataSource{
       print("ON 401 : $data");
       await getNewAccessToken();
       return await signout();
-    }
-    else {
+    } else {
       print(data);
       throw Exception();
     }
   }
-
 }

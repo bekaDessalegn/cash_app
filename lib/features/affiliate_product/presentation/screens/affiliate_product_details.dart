@@ -4,6 +4,7 @@ import 'package:cash_app/features/common_widgets/affiliate_mobile_header.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
 import 'package:cash_app/features/common_widgets/loading_box.dart';
 import 'package:cash_app/features/common_widgets/share_product_dialog.dart';
+import 'package:cash_app/features/common_widgets/socket_error_widget.dart';
 import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_bloc.dart';
 import 'package:cash_app/features/products/presentation/blocs/products/products_event.dart';
@@ -37,6 +38,11 @@ class _MobileAffiliateProductDetailsState extends State<MobileAffiliateProductDe
       body: BlocBuilder<SingleProductBloc, SingleProductState>(builder: (_, state) {
         if (state is GetSingleProductSuccessful) {
           return AffiliateProductDetailsBody(product: state.product);
+        } else if(state is GetSingleProductSocketError){
+          return Center(child: socketErrorWidget(onPressed: (){
+            final productDetails = BlocProvider.of<SingleProductBloc>(context);
+            productDetails.add(GetSingleProductEvent(widget.productId));
+          }),);
         } else if (state is GetSingleProductFailed) {
           return Center(
             child: errorBox(onPressed: (){

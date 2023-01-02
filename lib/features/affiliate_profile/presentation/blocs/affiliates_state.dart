@@ -1,6 +1,7 @@
 import 'package:cash_app/features/affiliate_profile/data/models/affiliates.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/avatar.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/children.dart';
+import 'package:cash_app/features/affiliate_profile/data/models/local_affiliate.dart';
 import 'package:cash_app/features/affiliate_profile/data/models/parent_affiliate.dart';
 
 abstract class SingleAffiliateState {}
@@ -10,6 +11,11 @@ class InitialSingleAffiliateState extends SingleAffiliateState {}
 class GetSingleAffiliateSuccessfulState extends SingleAffiliateState {
   final Affiliates affiliate;
   GetSingleAffiliateSuccessfulState(this.affiliate);
+}
+
+class GetSingleAffiliateSocketErrorState extends SingleAffiliateState {
+  final LocalAffiliate localAffiliate;
+  GetSingleAffiliateSocketErrorState(this.localAffiliate);
 }
 
 class GetSingleAffiliateLoadingState extends SingleAffiliateState {}

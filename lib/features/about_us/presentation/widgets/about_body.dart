@@ -10,6 +10,11 @@ import 'package:cash_app/features/about_us/presentation/blocs/about_us_state.dar
 import 'package:cash_app/features/about_us/presentation/widgets/how_affiliate_withus_video.dart';
 import 'package:cash_app/features/common_widgets/error_box.dart';
 import 'package:cash_app/features/common_widgets/footer.dart';
+import 'package:cash_app/features/common_widgets/products_box.dart';
+import 'package:cash_app/features/home/presentation/blocs/home_bloc.dart';
+import 'package:cash_app/features/home/presentation/blocs/home_event.dart';
+import 'package:cash_app/features/home/presentation/blocs/home_state.dart';
+import 'package:cash_app/features/products/data/models/products.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,10 +29,9 @@ class AboutBody extends StatefulWidget {
 
 class _AboutBodyState extends State<AboutBody> {
 
+  var heroDescriptionController = quill.QuillController.basic();
   var howToBuyFromUsController = quill.QuillController.basic();
   var howToAffiliateWithUsController = quill.QuillController.basic();
-  var whoAreWeDescriptionController = quill.QuillController.basic();
-  var whyUsDescriptionController = quill.QuillController.basic();
   var emptyController = quill.QuillController.basic();
 
   static String? convertUrlToId(String url, {bool trimWhitespaces = true}) {
@@ -60,13 +64,9 @@ class _AboutBodyState extends State<AboutBody> {
     return BlocConsumer<AboutUsContentBloc, AboutUsContentState>(
         listener: (_, state){
           if(state is GetAboutUsContentSuccessfulState){
-            var whoAreWeDescriptionJSON = jsonDecode(state.aboutUsContent.whoAreWeDescription);
-            whoAreWeDescriptionController = quill.QuillController(
-                document: quill.Document.fromJson(whoAreWeDescriptionJSON),
-                selection: TextSelection.collapsed(offset: 0));
-            var whyUsDescriptionJSON = jsonDecode(state.aboutUsContent.whyUsDescription);
-            whyUsDescriptionController = quill.QuillController(
-                document: quill.Document.fromJson(whyUsDescriptionJSON),
+            var heroDescriptionJSON = jsonDecode(state.aboutUsContent.heroDescription);
+            heroDescriptionController = quill.QuillController(
+                document: quill.Document.fromJson(heroDescriptionJSON),
                 selection: TextSelection.collapsed(offset: 0));
             var howToAffiliateWithUsJSON = jsonDecode(state.aboutUsContent.howToAffiliateWithUsDescription);
             howToAffiliateWithUsController = quill.QuillController(
@@ -107,113 +107,110 @@ class _AboutBodyState extends State<AboutBody> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Container(
-            height: 300,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(image: NetworkImage("$baseUrl${aboutUsContent.aboutUsImage.path}"), fit: BoxFit.cover),
-            ),
-            child: Container(
-              color: Colors.black.withOpacity(0.7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Some words",
-                    style: TextStyle(
-                      color: surfaceColor,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    "About Us",
-                    style: TextStyle(
-                        color: surfaceColor,
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+          SizedBox(
+            height: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Image.network(
+              "$baseUrl${aboutUsContent.heroImage.path}",
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.fitHeight,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  height: 180,
+                  width: double.infinity,
+                  decoration:
+                  BoxDecoration(border: Border.all(color: surfaceColor)),
+                );
+              },
             ),
           ),
-          SizedBox(height: 30,),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Who are we?",
-                  style: TextStyle(
-                      color: onBackgroundColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10,),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    "$baseUrl${aboutUsContent.whoAreWeImage.path}",
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 160,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        width: double.infinity,
-                        height: 160,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: surfaceColor)
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 10,),
                 SizedBox(
                     height: 0,
                     child: quill.QuillEditor.basic(controller: emptyController, readOnly: true)),
-                quill.QuillEditor.basic(controller: whoAreWeDescriptionController, readOnly: true),
-                SizedBox(height: 40,),
-                YoutubeVideo(youtubeId: convertUrlToId(aboutUsContent.whoAreWeVideoLink)!,),
-                SizedBox(height: 40,),
                 Text(
-                  "why us?",
+                  aboutUsContent.heroShortTitle,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: onBackgroundColor,
-                    fontSize: 18,
+                    fontSize: 17,
                   ),
                 ),
                 Text(
-                  "${aboutUsContent.whyUsTitle}",
+                  aboutUsContent.heroLongTitle,
                   style: TextStyle(
                       color: onBackgroundColor,
                       fontSize: 24,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10,),
-                quill.QuillEditor.basic(controller: whyUsDescriptionController, readOnly: true),
-                SizedBox(height: 17,),
-                Image.network(
-                  "$baseUrl${aboutUsContent.whyUsImage.path}",
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 187,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      width: double.infinity,
-                      height: 187,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: surfaceColor)
-                      ),
-                    );
-                  },
+                SizedBox(
+                  height: 15,
                 ),
-                SizedBox(height: 40,),
+                quill.QuillEditor.basic(
+                    controller: heroDescriptionController, readOnly: true),
+                SizedBox(height: 20,),
+                BlocBuilder<NewInStoreBloc, NewInStoreState>(builder: (_, state) {
+                  if (state is NewInStoreSuccessful) {
+                    return state.products.length == 0
+                        ? SizedBox()
+                        : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "New in store",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: onBackgroundColor,
+                              fontSize: 20),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        newInStore(products: state.products),
+                      ],
+                    );
+                  } else if (state is NewInStoreFailed) {
+                    return Center(
+                      child: errorBox(onPressed: () {
+                        final products = BlocProvider.of<NewInStoreBloc>(context);
+                        products.add(NewInStoreProductsEvent());
+                      }),
+                    );
+                  } else if (state is NewInStoreLoading) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "New in store",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: onBackgroundColor,
+                              fontSize: 20),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        loadingNewInStore(),
+                      ],
+                    );
+                  } else {
+                    return Center(
+                      child: Text(""),
+                    );
+                  }
+                }),
+                SizedBox(
+                  height: 35,
+                ),
                 Text(
                   "How to buy from us?",
                   style: TextStyle(
@@ -249,7 +246,7 @@ class _AboutBodyState extends State<AboutBody> {
                   width: double.infinity,
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 15),
+                          padding: EdgeInsets.symmetric(vertical: 10),
                           backgroundColor: primaryColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
@@ -271,7 +268,7 @@ class _AboutBodyState extends State<AboutBody> {
                   width: double.infinity,
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: EdgeInsets.symmetric(vertical: 10),
                         backgroundColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -294,6 +291,46 @@ class _AboutBodyState extends State<AboutBody> {
           SizedBox(height: 10,)
         ],
       ),
+    );
+  }
+
+  Widget newInStore({required List<Products> products}) {
+    return GridView.builder(
+        itemCount: products.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 260),
+        itemBuilder: (context, index) {
+          return productsBox(context: context, product: products[index]);
+        });
+  }
+
+  Widget loadingNewInStore() {
+    return Container(
+      height: 285,
+      margin: EdgeInsets.only(left: 20),
+      child: ListView.builder(
+          itemCount: 8,
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return Container(
+              width: 300,
+              height: 200,
+              margin: EdgeInsets.fromLTRB(0, 10, 50, 10),
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 2.0,
+                  ),
+                ],
+              ),
+            );
+          }),
     );
   }
 

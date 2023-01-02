@@ -14,7 +14,11 @@ class AffiliateTransactionsBloc extends Bloc<AffiliateTransactionsEvent, Affilia
     emit(GetAffiliateTransactionsLoadingState());
     try{
       final transactions = await transactionsRepository.getAffiliateTransactions(event.skipNumber);
-      emit(GetAffiliateTransactionsSuccessfulState(transactions));
+      if(transactions.runtimeType.toString() == "List<LocalTransactions>"){
+        emit(GetAffiliateTransactionsSocketErrorState(transactions));
+      } else{
+        emit(GetAffiliateTransactionsSuccessfulState(transactions));
+      }
     } catch(e){
       emit(GetAffiliateTransactionsFailedState("Something went wrong"));
     }

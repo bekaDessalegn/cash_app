@@ -16,6 +16,7 @@ import 'package:cash_app/features/affiliate_profile/presentation/widgets/change_
 import 'package:cash_app/features/affiliate_profile/presentation/widgets/change_phone_textformfield.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/widgets/children_box.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/widgets/delete_affiliate_dialog.dart';
+import 'package:cash_app/features/affiliate_profile/presentation/widgets/local_profile_body.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/widgets/promo_link_box.dart';
 import 'package:cash_app/features/affiliate_profile/presentation/widgets/signout_dialog.dart';
 import 'package:cash_app/features/common_widgets/bold_text.dart';
@@ -106,7 +107,6 @@ class _ProfileBodyState extends State<ProfileBody> {
     children.add(GetChildrenEvent());
     final parent = BlocProvider.of<ParentAffiliateBloc>(context);
     parent.add(StartGetParentAffiliateEvent());
-
     super.initState();
   }
 
@@ -116,6 +116,8 @@ class _ProfileBodyState extends State<ProfileBody> {
         builder: (_, state){
           if(state is GetSingleAffiliateSuccessfulState){
             return buildInitialInput(affiliate: state.affiliate);
+          } else if(state is GetSingleAffiliateSocketErrorState){
+            return localBuildInitialInput(context: context, affiliate: state.localAffiliate, promoLinkController: promoLinkController);
           } else if(state is GetSingleAffiliateLoadingState){
             return loadingProfile();
           } else{
