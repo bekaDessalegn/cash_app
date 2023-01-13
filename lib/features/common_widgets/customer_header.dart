@@ -6,6 +6,8 @@ import 'package:cash_app/features/common_widgets/main_logo.dart';
 import 'package:cash_app/features/common_widgets/share_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/bx.dart';
 
 Widget customerHeader({required BuildContext context}){
   return SafeArea(
@@ -24,23 +26,16 @@ Widget customerHeader({required BuildContext context}){
                     context.go(APP_PAGE.product.toPath);
                   },
                   child: mainLogo()),
-              Row(
-                children: [
-                  TextButton(onPressed: (){
+              IconButton(
+                  padding: EdgeInsets.fromLTRB(0, 0, 25, 0),
+                  iconSize: 30,
+                  onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MobileLoginScreen()));
-                  }, child: Text("Sign in")),
-                  Text(
-                    "|",
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 17,
-                    ),
-                  ),
-                  TextButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MobileSignUpScreen()));
-                  }, child: Text("Sign up")),
-                ],
-              )
+                  },
+                  icon: Iconify(
+                    Bx.user,
+                    size: 30,
+                  ))
             ],
           ),
         ],

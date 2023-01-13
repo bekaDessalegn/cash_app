@@ -5,6 +5,8 @@ class AboutUsContent {
   final String heroShortTitle;
   final String heroLongTitle;
   final String heroDescription;
+  final ImageContent whoAreWeImage;
+  final String whoAreWeDescription;
   final String whoAreWeVideoLink;
   final String howToBuyFromUsDescription;
   final String howToAffiliateWithUsDescription;
@@ -14,6 +16,8 @@ class AboutUsContent {
     required this.heroShortTitle,
     required this.heroLongTitle,
     required this.heroDescription,
+    required this.whoAreWeImage,
+    required this.whoAreWeDescription,
     required this.whoAreWeVideoLink,
     required this.howToBuyFromUsDescription,
     required this.howToAffiliateWithUsDescription,
@@ -25,6 +29,8 @@ class AboutUsContent {
           heroShortTitle: json["heroShortTitle"],
           heroLongTitle: json["heroLongTitle"],
           heroDescription: json["heroDescription"],
+          whoAreWeImage: ImageContent.fromJson(json["whoAreWeImage"]),
+          whoAreWeDescription: json["whoAreWeDescription"],
           whoAreWeVideoLink: json["whoAreWeVideoLink"],
           howToBuyFromUsDescription: json["howToBuyFromUsDescription"],
           howToAffiliateWithUsDescription: json["howToAffiliateWithUsDescription"],

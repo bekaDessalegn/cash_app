@@ -47,7 +47,7 @@ Widget customerBottomNavigationBar(BuildContext context, int index){
       BottomNavigationBarItem(
         icon: Iconify(Ic.outline_local_phone, color: index == 2 ? primaryColor : onBackgroundColor,),
         label: "Contact us",
-      ),
+      )
     ],
   );
 }

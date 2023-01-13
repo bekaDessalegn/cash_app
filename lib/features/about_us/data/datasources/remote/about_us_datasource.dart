@@ -10,7 +10,7 @@ class AboutUsDataSource{
       'Accept': '*/*',
       'Api-Key': apiKey
     };
-    var url = Uri.parse('$baseUrl/static-web-contents?select=["heroImage", "heroShortTitle", "heroLongTitle", "heroDescription", "whoAreWeVideoLink", "howToBuyFromUsDescription", "howToAffiliateWithUsDescription", "howToAffiliateWithUsVideoLink"]');
+    var url = Uri.parse('$baseUrl/static-web-contents?select=["heroImage", "heroShortTitle", "heroLongTitle", "heroDescription", "whoAreWeImage", "whoAreWeDescription", "whoAreWeVideoLink", "howToBuyFromUsDescription", "howToAffiliateWithUsDescription", "howToAffiliateWithUsVideoLink"]');
 
     try{
       var res = await http.get(url, headers: headersList);
