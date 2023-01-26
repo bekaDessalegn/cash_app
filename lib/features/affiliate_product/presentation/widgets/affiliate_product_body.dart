@@ -95,9 +95,9 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
       final moreProducts = BlocProvider.of<ProductsBloc>(context);
 
       if (categoryList[selectedCategoryIndex].categoryName == "All products") {
-        moreProducts.add(GetMoreProductsForListEvent(skipNumber));
+        moreProducts.add(GetProductsForListEvent(skipNumber));
       } else {
-        moreProducts.add(FilterMoreProductsByCategoryEvent(
+        moreProducts.add(FilterProductsByCategoryEvent(
             categoryList[selectedCategoryIndex].categoryName, skipNumber));
       }
 
@@ -562,8 +562,16 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                   _allProducts.addAll(state.products);
                   fetchedProducts = state.products;
                   isCategoryLoading = false;
+                  setState(() {
+                    _isLoadMoreRunning = false;
+                  });
                 } else if(state is GetProductsLoading){
                   isCategoryLoading = true;
+                  if(_allProducts.toString() != "[]"){
+                    setState(() {
+                      _isLoadMoreRunning = true;
+                    });
+                  }
                 }
               },
               builder: (_, state){
@@ -574,7 +582,11 @@ class _AffiliateProductBodyState extends State<AffiliateProductBody> {
                 } else if(state is SocketErrorState){
                   return localAffiliateAllProducts(localProducts: state.localProducts);
                 } else if(state is GetProductsLoading){
-                  return Center(child: loadingBox(),);
+                  if(_allProducts.toString() == "[]"){
+                    return Center(child: loadingBox(),);
+                  } else {
+                    return affiliateAllProducts();
+                  }
                 }
                 else if(state is GetProductsFailed){
                   return Center(

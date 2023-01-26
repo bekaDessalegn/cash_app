@@ -29,7 +29,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     } on HttpException{
       emit(SignUpStateFailed("Phone or Email already exists"));
     } on SocketException{
-      emit(SignUpStateFailed("Something went wrong please, try again"));
+      emit(SignUpStateFailed("Please connect to the internet"));
     } on Exception{
       emit(SignUpStateFailed("Something went wrong please, try again"));
     }

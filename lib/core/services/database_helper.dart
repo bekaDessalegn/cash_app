@@ -15,6 +15,18 @@ class DatabaseHelper{
         version: 1,
         onCreate: (Database db,int version) async{
           await db.execute("""
+          CREATE TABLE LocalAboutUsContent(
+          heroShortTitle TEXT,
+          heroLongTitle TEXT,
+          heroDescription TEXT,
+          whoAreWeDescription TEXT,
+          whoAreWeVideoLink TEXT,
+          howToBuyFromUsDescription TEXT,
+          howToAffiliateWithUsDescription TEXT,
+          howToAffiliateWithUsVideoLink TEXT
+          )"""
+          );
+          await db.execute("""
           CREATE TABLE Product(
           productId TEXT PRIMARY KEY,
           productName TEXT,

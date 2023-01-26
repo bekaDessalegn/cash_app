@@ -13,30 +13,35 @@ import 'package:provider/provider.dart';
 Widget signoutDialog({required BuildContext context}){
   final _prefs = PrefService();
   final authService = Provider.of<AuthService>(context);
-  return Dialog(
-    child: BlocConsumer<SingleAffiliateBloc, SingleAffiliateState>(builder: (_, state){
-      if(state is SignOutLoading){
-        return _buildSignoutInput(context: context, isLoading: true);
-      } else{
-        return _buildSignoutInput(context: context, isLoading: false);
-      }
-    }, listener: (_, state){
-      if(state is SignOutSuccessful){
-        _prefs.removeCache();
-        _prefs.removeAffiliateId();
-        authService.logOut();
-        context.go(APP_PAGE.product.toPath);
-      }
-    }),
+  return WillPopScope(
+    onWillPop: () async {
+      return false;
+    },
+    child: Dialog(
+      child: BlocConsumer<SingleAffiliateBloc, SingleAffiliateState>(builder: (_, state){
+        if(state is SignOutLoading){
+          return _buildSignoutInput(context: context, isLoading: true);
+        } else{
+          return _buildSignoutInput(context: context, isLoading: false);
+        }
+      }, listener: (_, state){
+        if(state is SignOutSuccessful){
+          _prefs.removeCache();
+          _prefs.removeAffiliateId();
+          authService.logOut();
+          context.go(APP_PAGE.product.toPath);
+        }
+      }),
+    ),
   );
 }
 
 Widget _buildSignoutInput({required BuildContext context, required bool isLoading}){
   return SizedBox(
-    height: 190,
+    height: 200,
     width: MediaQuery.of(context).size.width < 500 ? double.infinity : 300,
     child: Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

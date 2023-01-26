@@ -16,7 +16,7 @@ import 'package:go_router/go_router.dart';
 Widget signUpButton(
     {required BuildContext context,
     required String text,
-    required bool isLoading}) {
+    required bool isLoading, required GlobalKey<FormState> signupFormKey}) {
   final _prefs = PrefService();
   return SizedBox(
       width: double.infinity,

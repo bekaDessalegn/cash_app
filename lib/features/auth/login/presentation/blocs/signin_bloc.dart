@@ -23,7 +23,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     } on HttpException{
       emit(SignInStateFailed("One of the credentials is wrong"));
     } on SocketException{
-      emit(SignInStateFailed("Something went wrong please, try again"));
+      emit(SignInStateFailed("Please connect to the internet"));
     } on Exception{
       emit(SignInStateFailed("Something went wrong please, try again"));
     }

@@ -26,6 +26,8 @@ import 'package:provider/provider.dart';
 class MobileSignUpBody extends StatelessWidget {
 
   final _prefs = PrefService();
+  final signupFormKey = GlobalKey<FormState>();
+  final verifyFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +107,7 @@ class MobileSignUpBody extends StatelessWidget {
               SizedBox(
                 height: 30,
               ),
-              signUpButton(context: context, text: "Sign up", isLoading: isLoading),
+              signUpButton(context: context, text: "Sign up", isLoading: isLoading, signupFormKey: signupFormKey),
               const SizedBox(
                 height: smallSpacing,
               ),
@@ -115,7 +117,7 @@ class MobileSignUpBody extends StatelessWidget {
                   Text("Already have an account?", style: TextStyle(fontSize: defaultFontSize, color: onBackgroundColor, fontWeight: FontWeight.w500),),
                   TextButton(
                       onPressed: () {
-                        context.go('/login');
+                        context.push('/login');
                       },
                       child: normalText(value: "Sign In", size: defaultFontSize, color: primaryColor)),
                 ],
@@ -174,7 +176,7 @@ class MobileSignUpBody extends StatelessWidget {
                   SizedBox(
                     height: 30,
                   ),
-                  verifySignUpButton(context: context, text: "Verify", isLoading: isLoading),
+                  verifySignUpButton(context: context, text: "Verify", isLoading: isLoading, verifyFormKey: verifyFormKey),
                   const SizedBox(
                     height: smallSpacing,
                   ),
@@ -187,7 +189,7 @@ class MobileSignUpBody extends StatelessWidget {
                 Text("Already have an account?", style: TextStyle(fontSize: defaultFontSize, color: onBackgroundColor, fontWeight: FontWeight.w500),),
                 TextButton(
                     onPressed: () {
-                      context.go('/login');
+                      context.push('/login');
                     },
                     child: normalText(value: "Sign In", size: defaultFontSize, color: primaryColor)),
               ],

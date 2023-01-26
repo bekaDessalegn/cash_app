@@ -433,47 +433,52 @@ class _ProfileBodyState extends State<ProfileBody> {
                         showDialog(context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context){
-                          return Dialog(
-                            child: SizedBox(
-                              height: 170,
-                              width: MediaQuery.of(context).size.width < 500 ? double.infinity : 300,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Remove avatar", style: TextStyle(
-                                        color: onBackgroundColor,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold
-                                    ),),
-                                    SizedBox(height: 10,),
-                                    Text("Are you sure you want to delete your avatar ?", style: TextStyle(
-                                        color: onBackgroundColor,
-                                        fontSize: 16
-                                    ),),
-                                    SizedBox(height: 20,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        TextButton(onPressed: (){
-                                          Navigator.pop(context);
-                                        }, child: Text("Cancel", style: TextStyle(
-                                            color: onBackgroundColor,
-                                            fontSize: 16
-                                        ),),),
-                                        SizedBox(width: 10,),
-                                        TextButton(onPressed: (){
-                                          final delete = BlocProvider.of<PutAvatarBloc>(context);
-                                          delete.add(DeleteAvatar());
-                                          Navigator.pop(context);
-                                        }, child: Text("Remove", style: TextStyle(
-                                            color: dangerColor,
-                                            fontSize: 16
-                                        ),),),
-                                      ],
-                                    )
-                                  ],
+                          return WillPopScope(
+                            onWillPop: () async {
+                              return false;
+                            },
+                            child: Dialog(
+                              child: SizedBox(
+                                height: 180,
+                                width: MediaQuery.of(context).size.width < 500 ? double.infinity : 300,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Remove avatar", style: TextStyle(
+                                          color: onBackgroundColor,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold
+                                      ),),
+                                      SizedBox(height: 10,),
+                                      Text("Are you sure you want to delete your avatar ?", style: TextStyle(
+                                          color: onBackgroundColor,
+                                          fontSize: 16
+                                      ),),
+                                      SizedBox(height: 20,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(onPressed: (){
+                                            Navigator.pop(context);
+                                          }, child: Text("Cancel", style: TextStyle(
+                                              color: onBackgroundColor,
+                                              fontSize: 16
+                                          ),),),
+                                          SizedBox(width: 10,),
+                                          TextButton(onPressed: (){
+                                            final delete = BlocProvider.of<PutAvatarBloc>(context);
+                                            delete.add(DeleteAvatar());
+                                            Navigator.pop(context);
+                                          }, child: Text("Remove", style: TextStyle(
+                                              color: dangerColor,
+                                              fontSize: 16
+                                          ),),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

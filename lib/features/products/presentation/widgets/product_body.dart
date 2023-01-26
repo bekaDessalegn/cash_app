@@ -81,9 +81,9 @@ class _ProductBodyState extends State<ProductBody> {
       final moreProducts = BlocProvider.of<ProductsBloc>(context);
 
       if (categoryList[selectedCategoryIndex].categoryName == "All products") {
-        moreProducts.add(GetMoreProductsForListEvent(skipNumber));
+        moreProducts.add(GetProductsForListEvent(skipNumber));
       } else {
-        moreProducts.add(FilterMoreProductsByCategoryEvent(
+        moreProducts.add(FilterProductsByCategoryEvent(
             categoryList[selectedCategoryIndex].categoryName, skipNumber));
       }
 
@@ -500,7 +500,15 @@ class _ProductBodyState extends State<ProductBody> {
                     _allProducts.addAll(state.products);
                     fetchedProducts = state.products;
                     isCategoryLoading = false;
+                    setState(() {
+                      _isLoadMoreRunning = false;
+                    });
                   } else if (state is GetProductsLoading) {
+                    if(_allProducts.toString() != "[]"){
+                      setState(() {
+                        _isLoadMoreRunning = true;
+                      });
+                    }
                     isCategoryLoading = true;
                   }
                 }, builder: (_, state) {
@@ -514,9 +522,11 @@ class _ProductBodyState extends State<ProductBody> {
                   } else if(state is SocketErrorState){
                     return localAllProductListView(localProducts: state.localProducts);
                   } else if (state is GetProductsLoading) {
-                    return Center(
-                      child: loadingBox(),
-                    );
+                    if(_allProducts.toString() == "[]"){
+                      return Center(child: loadingBox(),);
+                    } else {
+                      return allProducts();
+                    }
                   } else if (state is GetProductsFailed) {
                     return Center(
                       child: errorBox(onPressed: () {

@@ -45,7 +45,7 @@ class SignInDataSource {
         throw Exception();
       }
     } on SocketException{
-      throw Exception();
+      throw SocketException("No Internet");
     }
 
   }

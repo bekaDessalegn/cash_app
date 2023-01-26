@@ -16,6 +16,11 @@ class NewInStoreSuccessful extends NewInStoreState {
 
 class NewInStoreLoading extends NewInStoreState {}
 
+class NewInStoreSocketError extends NewInStoreState {
+  final List<LocalProducts> products;
+  NewInStoreSocketError(this.products);
+}
+
 class NewInStoreFailed extends NewInStoreState {
   final String errorType;
   NewInStoreFailed(this.errorType);

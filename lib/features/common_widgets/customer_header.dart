@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bx.dart';
+import 'package:iconify_flutter/icons/ph.dart';
 
 Widget customerHeader({required BuildContext context}){
   return SafeArea(
@@ -28,13 +29,13 @@ Widget customerHeader({required BuildContext context}){
                   child: mainLogo()),
               IconButton(
                   padding: EdgeInsets.fromLTRB(0, 0, 25, 0),
-                  iconSize: 30,
+                  iconSize: 28,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MobileLoginScreen()));
                   },
                   icon: Iconify(
-                    Bx.user,
-                    size: 30,
+                    Ph.user,
+                    size: 28,
                   ))
             ],
           ),

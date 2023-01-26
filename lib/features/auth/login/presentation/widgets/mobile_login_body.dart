@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 class MobileLoginBody extends StatelessWidget {
 
   final _prefs = PrefService();
-  TextEditingController phoneOrEmailController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class MobileLoginBody extends StatelessWidget {
               SizedBox(
                 height: h / 20,
               ),
-              loginButton(context: context, text: "Sign in", isLoading: isLoading),
+              loginButton(context: context, text: "Sign in", isLoading: isLoading, globalKey: formKey),
               const SizedBox(
                 height: smallSpacing,
               ),
@@ -103,7 +103,7 @@ class MobileLoginBody extends StatelessWidget {
                   Text("No account?", style: TextStyle(fontSize: defaultFontSize, fontWeight: FontWeight.w500, color: onBackgroundColor),),
                   TextButton(
                       onPressed: () {
-                        context.go('/signup');
+                        context.push('/signup');
                       },
                       child: normalText(value: "Create One", size: defaultFontSize, color: primaryColor)),
                 ],

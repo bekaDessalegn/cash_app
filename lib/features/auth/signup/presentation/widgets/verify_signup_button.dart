@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 final _prefs = PrefService();
 
-Widget verifySignUpButton({required BuildContext context, required String text, required bool isLoading}) {
+Widget verifySignUpButton({required BuildContext context, required String text, required bool isLoading, required GlobalKey<FormState> verifyFormKey}) {
   final authService = Provider.of<AuthService>(context);
   return SizedBox(
       width: double.infinity,

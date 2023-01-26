@@ -9,11 +9,6 @@ class GetProductsForListEvent extends ProductsEvent {
   GetProductsForListEvent(this.skipNumber);
 }
 
-class GetMoreProductsForListEvent extends ProductsEvent {
-  int skipNumber;
-  GetMoreProductsForListEvent(this.skipNumber);
-}
-
 class SearchProductsEvent extends ProductsEvent {
   String productName;
   SearchProductsEvent(this.productName);
@@ -23,12 +18,6 @@ class FilterProductsByCategoryEvent extends ProductsEvent {
   String categoryName;
   int skipNumber;
   FilterProductsByCategoryEvent(this.categoryName, this.skipNumber);
-}
-
-class FilterMoreProductsByCategoryEvent extends ProductsEvent {
-  String categoryName;
-  int skipNumber;
-  FilterMoreProductsByCategoryEvent(this.categoryName, this.skipNumber);
 }
 
 abstract class SingleProductEvent {}

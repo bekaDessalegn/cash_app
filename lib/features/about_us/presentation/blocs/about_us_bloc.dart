@@ -13,7 +13,11 @@ class AboutUsContentBloc extends Bloc<AboutUsContentEvent, AboutUsContentState> 
     emit(GetAboutUsContentLoadingState());
     try {
       final aboutUsContent = await aboutUsRepository.getAboutUsContent();
-      emit(GetAboutUsContentSuccessfulState(aboutUsContent));
+      if(aboutUsContent.runtimeType.toString() == "LocalAboutUsContent"){
+        emit(GetAboutUsContentSocketErrorState(aboutUsContent));
+      } else {
+        emit(GetAboutUsContentSuccessfulState(aboutUsContent));
+      }
     } catch(e){
       emit(GetAboutUsContentFailedState("Something went wrong fetching the AboutUs content"));
     }

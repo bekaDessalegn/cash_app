@@ -10,9 +10,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ProductsBloc(this.productsRepository) : super(InitialProductsState()){
     on<GetProductsEvent>(_onGetProductsEvent);
     on<GetProductsForListEvent>(_onGetProductsForListEvent);
-    on<GetMoreProductsForListEvent>(_onGetMoreProductsForListEvent);
     on<FilterProductsByCategoryEvent>(_onFilterProductsByCategoryEvent);
-    on<FilterMoreProductsByCategoryEvent>(_onFilterMoreProductsByCategoryEvent);
   }
 
   void _onGetProductsEvent(GetProductsEvent event, Emitter emit) async {
@@ -44,30 +42,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     }
   }
 
-  void _onGetMoreProductsForListEvent(GetMoreProductsForListEvent event, Emitter emit) async {
-    try {
-      final products = await productsRepository.getProductsForList(event.skipNumber);
-      emit(GetProductsSuccessful(products));
-    } on SocketException{
-      emit(GetProductsFailed("Something went wrong please, try again"));
-    } on Exception{
-      emit(GetProductsFailed("Something went wrong please, try again"));
-    }
-  }
-
   void _onFilterProductsByCategoryEvent(FilterProductsByCategoryEvent event, Emitter emit) async {
     emit(GetProductsLoading());
-    try {
-      final products = await productsRepository.filterProductsByCategory(event.categoryName, event.skipNumber);
-      emit(GetProductsSuccessful(products));
-    } on SocketException{
-      emit(GetProductsFailed("Something went wrong please, try again"));
-    } on Exception{
-      emit(GetProductsFailed("Something went wrong please, try again"));
-    }
-  }
-
-  void _onFilterMoreProductsByCategoryEvent(FilterMoreProductsByCategoryEvent event, Emitter emit) async {
     try {
       final products = await productsRepository.filterProductsByCategory(event.categoryName, event.skipNumber);
       emit(GetProductsSuccessful(products));

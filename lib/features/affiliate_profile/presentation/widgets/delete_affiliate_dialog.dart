@@ -20,24 +20,29 @@ final _deleteAffiliateController = TextEditingController();
 Widget deleteAffiliateDialog({required BuildContext context}){
   final _prefs = PrefService();
   final authService = Provider.of<AuthService>(context);
-  return Dialog(
-    child: BlocConsumer<DeleteAffiliateBloc, DeleteAffiliateState>(builder: (_, state){
-      if(state is DeleteAffiliateLoadingState){
-        return _buildDeleteAffiliateInput(context: context, isLoading: true);
-      } else{
-        return _buildDeleteAffiliateInput(context: context, isLoading: false);
-      }
-    }, listener: (_, state){
-      if(state is DeleteAffiliateSuccessfulState){
-        _prefs.removeCache();
-        _prefs.removeAffiliateId();
-        authService.logOut();
-        context.go(APP_PAGE.home.toPath);
-      }
-      if(state is DeleteAffiliateFailedState){
-        buildErrorLayout(context: context, message: state.errorType);
-      }
-    }),
+  return WillPopScope(
+    onWillPop: () async {
+      return false;
+    },
+    child: Dialog(
+      child: BlocConsumer<DeleteAffiliateBloc, DeleteAffiliateState>(builder: (_, state){
+        if(state is DeleteAffiliateLoadingState){
+          return _buildDeleteAffiliateInput(context: context, isLoading: true);
+        } else{
+          return _buildDeleteAffiliateInput(context: context, isLoading: false);
+        }
+      }, listener: (_, state){
+        if(state is DeleteAffiliateSuccessfulState){
+          _prefs.removeCache();
+          _prefs.removeAffiliateId();
+          authService.logOut();
+          context.go(APP_PAGE.home.toPath);
+        }
+        if(state is DeleteAffiliateFailedState){
+          buildErrorLayout(context: context, message: state.errorType);
+        }
+      }),
+    ),
   );
 }
 

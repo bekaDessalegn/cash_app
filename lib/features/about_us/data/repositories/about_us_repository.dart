@@ -5,7 +5,7 @@ class AboutUsRepository{
   AboutUsDataSource aboutUsDataSource;
   AboutUsRepository(this.aboutUsDataSource);
 
-  Future<AboutUsContent> getAboutUsContent() async{
+  Future getAboutUsContent() async{
     try{
       final aboutUsContent = await aboutUsDataSource.getAboutUsContent();
       return aboutUsContent;

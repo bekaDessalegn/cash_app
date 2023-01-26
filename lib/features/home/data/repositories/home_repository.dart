@@ -11,7 +11,7 @@ class HomeRepository {
   HomeDataSource homeDataSource;
   HomeRepository(this.homeDataSource);
 
-  Future<List<Products>> newInStoreProducts() async{
+  Future newInStoreProducts() async{
     try{
       print("New In Store Products Success");
       final products = await homeDataSource.newInStoreProducts();

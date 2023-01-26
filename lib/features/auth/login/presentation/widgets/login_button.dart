@@ -13,13 +13,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 Widget loginButton(
     {required BuildContext context,
     required String text,
-    required bool isLoading
+    required bool isLoading, required GlobalKey<FormState> globalKey
     }) {
   return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
           onPressed: isLoading ? null : () {
-            if (formKey.currentState!.validate()) {
+            if (globalKey.currentState!.validate()) {
               var bytes = utf8.encode(password.text);
               var sha512 = sha256.convert(bytes);
               var hashedPassword = sha512.toString();

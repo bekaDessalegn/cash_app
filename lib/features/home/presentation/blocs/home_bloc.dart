@@ -15,7 +15,11 @@ class NewInStoreBloc extends Bloc<NewInStoreEvent, NewInStoreState> {
     emit(NewInStoreLoading());
     try {
       final products = await homeRepository.newInStoreProducts();
-      emit(NewInStoreSuccessful(products));
+      if(products.runtimeType.toString() == "List<LocalProducts>"){
+        emit(NewInStoreSocketError(products));
+      } else{
+        emit(NewInStoreSuccessful(products));
+      }
     } on SocketException{
       emit(NewInStoreFailed("Something went wrong please, try again"));
     } on Exception{

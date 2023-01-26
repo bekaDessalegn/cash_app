@@ -17,7 +17,7 @@ class HomeDataSource {
   ProductLocalDb productLocalDb = ProductLocalDb();
   LogoImageLocalDb logoImageLocalDb = LogoImageLocalDb();
 
-  Future<List<Products>> newInStoreProducts() async {
+  Future newInStoreProducts() async {
     var headersList = {
       'Accept': '*/*',
       'Api-Key': apiKey,
@@ -51,8 +51,9 @@ class HomeDataSource {
         throw Exception();
       }
     } on SocketException {
-      print("Socket Socket");
-      throw Exception();
+      final localProduct = await productLocalDb.getListProducts();
+      var newProducts = localProduct.take(4);
+      return newProducts;
     }
   }
 
